@@ -1,4 +1,4 @@
-# Donkey Kong
+﻿# Donkey Kong
 
 Documento de concepto de videojuego
 
@@ -27,6 +27,7 @@ Juego original:
 
 
 ![GitHub Logo](https://vignette.wikia.nocookie.net/ssbb/images/e/e8/Car%C3%A1tula_Donkey_Kong_%28NES%29.jpg/revision/latest/scale-to-width-down/332?cb=20121029150116&path-prefix=es)
+![GitHub Logo](https://upload.wikimedia.org/wikipedia/en/f/fd/Donkey_Kong_Gameplay.png)
 
 
 ### Mecanismos e interfaz de juego
