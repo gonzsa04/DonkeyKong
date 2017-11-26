@@ -12,6 +12,8 @@ var playScene={
         this.planta1=this.plataformas.create(0, 550, 'plataforma');
         this.planta1.scale.setTo(2, 2);//la escalamos
         this.planta1.body.immovable=true;//la hacemos inmovible
+
+        this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
 
     update: function(){
@@ -26,6 +28,6 @@ var playScene={
         //lo mismo con derecha
         else if(this.cursors.right.isDown)this.mario.mueveDerecha();
         //si se pulsa arriba mario salta
-        if(this.cursors.up.isDown)this.mario.saltar();
+        if(this.SpaceKey.isDown)this.mario.saltar();
     }
 };
