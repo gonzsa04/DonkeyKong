@@ -4,12 +4,12 @@ class Mario{
     constructor(){
         this._mario=game.add.sprite(100, 400, 'mario');//carga el sprite de Mario
         this._jump=true;//indica si mario puede saltar
-        this._vel=100;//velocidad a la que se mueve mario
-        this._alturaSalto=-200;//altura a la que salta mario
+        this._vel=150;//velocidad a la que se mueve mario
+        this._alturaSalto=-150;//altura a la que salta mario
         game.physics.arcade.enable(this._mario);//habilitamos fisicas, gravedad, etc.
-        this._mario.body.gravity.y=250;
+        this._mario.body.gravity.y=400;
         this._mario.body.colliderWorldBounds=true;
-        this._mario.scale.setTo(0.25, 0.25);//lo escalamos a gusto
+        this._mario.scale.setTo(0.15, 0.15);//lo escalamos a gusto
     }
 
     //mueve a mario a la izquierda a una velocidad

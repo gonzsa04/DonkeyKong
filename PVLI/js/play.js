@@ -16,16 +16,16 @@ var playScene={
 
     update: function(){
         this.mario.update(this.plataformas);//llamamos al update de mario
-        this.input;//llamamos al gestor del input
+        this.teclas();//llamamos al gestor del input
     },
 
     //gestiona el input
-    input: function(){
+    teclas: function(){
         //si se pulsa izquierda mario se mueve en esa direccion
         if(this.cursors.left.isDown)this.mario.mueveIzquierda();
         //lo mismo con derecha
         else if(this.cursors.right.isDown)this.mario.mueveDerecha();
         //si se pulsa arriba mario salta
-        else if(this.cursors.up.isDown)this.mario.saltar();
+        if(this.cursors.up.isDown)this.mario.saltar();
     }
 };
