@@ -7,6 +7,7 @@ var loadScene={
 		game.load.image('mario', 'images/mario.png');//sprite de Mario
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
+		game.load.image('princesa', 'images/princesa.png');//sprite de la princesa
 	},
 	//create es como Start en Unity
 	create:function(){

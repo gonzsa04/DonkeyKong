@@ -32,9 +32,11 @@ var playScene={
         //ESCALERAS
         //hacemos lo mismo con las escaleras
         this.escaleras=game.add.group();
+        this.escaleras.enableBody=true;
 
         this.escalera1=this.escaleras.create(545, 445, 'escaleras');
         this.escalera1.scale.setTo(3,4);
+        this.escalera1.body.immovable=true;
         this.escalera2=this.escaleras.create(30, 345, 'escaleras');
         this.escalera2.scale.setTo(3,4);
         this.escalera3=this.escaleras.create(545, 245, 'escaleras');
@@ -43,6 +45,12 @@ var playScene={
         this.escalera4.scale.setTo(3,4);
         this.escalera5=this.escaleras.create(545, 45, 'escaleras');
         this.escalera5.scale.setTo(3,4);
+
+        //PRINCESA
+        this.princesa=game.add.group();
+        this.princesa.enableBody=true;
+        this.princesa1=this.princesa.create(50, 0, 'princesa');
+        this.princesa1.scale.setTo(0.1, 0.1);
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
@@ -73,18 +81,21 @@ var playScene={
     //gestiona las colisiones
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo puedeSubir de este
-        if(this.checkOverlap(this.mario.mario, this.escalera1) || this.checkOverlap(this.mario.mario, this.escalera2) ||
-        this.checkOverlap(this.mario.mario, this.escalera3) ||this.checkOverlap(this.mario.mario, this.escalera4) ||
-        this.checkOverlap(this.mario.mario, this.escalera5))this.mario.puedeSubir();
+        if(game.physics.arcade.overlap(this.mario.mario, this.escaleras))this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
+        //si mario llega hasta la princesa gana
+        if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
     },
 
-    //dice si dos sprites estan colisionando
-    checkOverlap: function(spriteA, spriteB){
-        
-        var boundsA = spriteA.getBounds();
-        var boundsB = spriteB.getBounds();
-        
-        return Phaser.Rectangle.intersects(boundsA, boundsB);
+    //metodo llamado cuando ganamos
+    ganar: function(){
+        this.mario.morir();
+        game.state.start('ganar');
+    },
+
+    //metodo llamado cuando perdemos
+    perder: function(){
+        this.mario.morir();
+        game.state.start('perder');
     }
 };

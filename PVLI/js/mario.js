@@ -16,11 +16,13 @@ class Mario{
 
     //mueve a mario a la izquierda a una velocidad
     mueveIzquierda(){
+        this._mario.scale.setTo(-0.15, 0.15);
         this._mario.body.velocity.x=-this._vel;
     }
 
     //mueve a mario a la derecha a una velocidad
     mueveDerecha(){
+        this._mario.scale.setTo(0.15, 0.15);
         this._mario.body.velocity.x=this._vel;
     }
 
