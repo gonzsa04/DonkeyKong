@@ -2,7 +2,7 @@
 class Mario{
     //constructora de Mario
     constructor(){
-        this._mario=game.add.sprite(100, 500, 'mario');//carga el sprite de Mario
+        this._mario=game.add.sprite(100, 100, 'mario');//carga el sprite de Mario
         this._jump=true;//indica si mario puede saltar
         this._sube=false;//indica si mario puede subir escaleras
         this._atraviesaMuros=false;//indica si mario puede traspasar las plataformas (lo hara cuando suba o baje una escalera)

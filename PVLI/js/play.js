@@ -91,6 +91,7 @@ var playScene={
         else this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
+        game.physics.arcade.collide(this.mario.mario, this.blockedLayer);
     },
 
     //metodo llamado cuando ganamos
