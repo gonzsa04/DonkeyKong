@@ -3,7 +3,13 @@ var playScene={
     create: function(){
         this.cursors=game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
 
-        //PLATAFORMAS
+        this.map=game.add.tilemap('nivel1');
+        this.map.addTilesetImage('tiles', 'gameTiles');
+        this.backgroundLayer=this.map.createLayer('backgroundLayer');
+        this.blockedLayer=this.map.createLayer('blockedLayer');
+        this.map.setCollisionBetween(1, 100000, true, 'blockedLayer');
+        this.backgroundLayer.resizeWorld();
+        /*//PLATAFORMAS
         //metemos todas las plataformas en un mismo grupo,
         this.plataformas=game.add.group();//asi tratamos todas a la vez y no una por una
         this.plataformas.enableBody=true;//añadimos fisicas a las plataformas
@@ -44,7 +50,7 @@ var playScene={
         this.escalera4=this.escaleras.create(30, 145, 'escaleras');
         this.escalera4.scale.setTo(3,4);
         this.escalera5=this.escaleras.create(545, 45, 'escaleras');
-        this.escalera5.scale.setTo(3,4);
+        this.escalera5.scale.setTo(3,4);*/
 
         //PRINCESA
         this.princesa=game.add.group();
