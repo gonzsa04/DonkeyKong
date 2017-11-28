@@ -7,7 +7,7 @@ var playScene={
         this.map.addTilesetImage('tiles', 'gameTiles');
         this.backgroundLayer=this.map.createLayer('backgroundLayer');
         this.blockedLayer=this.map.createLayer('blockedLayer');
-        this.map.setCollisionBetween(1, 100000, true, 'blockedLayer');
+        this.map.setCollisionBetween(1, 2000, true, 'blockedLayer');
         this.backgroundLayer.resizeWorld();
         /*//PLATAFORMAS
         //metemos todas las plataformas en un mismo grupo,
