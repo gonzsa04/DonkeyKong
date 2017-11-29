@@ -3,40 +3,36 @@ var playScene={
     create: function(){
         this.cursors=game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
 
-        this.map=game.add.tilemap('nivel1');
-        this.map.addTilesetImage('tiles', 'gameTiles');
-        this.backgroundLayer=this.map.createLayer('backgroundLayer');
-        this.blockedLayer=this.map.createLayer('blockedLayer');
-        this.map.setCollisionBetween(1, 2000, true, 'blockedLayer');
-        this.backgroundLayer.resizeWorld();
-        /*//PLATAFORMAS
+        //PLATAFORMAS
         //metemos todas las plataformas en un mismo grupo,
         this.plataformas=game.add.group();//asi tratamos todas a la vez y no una por una
         this.plataformas.enableBody=true;//añadimos fisicas a las plataformas
 
         //metemos en el grupo de plataformas la primera planta del juego
         this.planta1=this.plataformas.create(0, 550, 'plataforma');
-        this.planta1.scale.setTo(2, 2);//la escalamos
+        this.planta1.scale.setTo(9, 2);//la escalamos
         this.planta1.body.immovable=true;//la hacemos inmovible
         //lo mismo con las demas plantas
         this.planta2=this.plataformas.create(25, 450, 'plataforma');
-        this.planta2.scale.setTo(1.4, 0.0250);//la escalamos
+        this.planta2.scale.setTo(8, 2);//la escalamos
         this.planta2.body.immovable=true;//la hacemos inmovible
         this.planta3=this.plataformas.create(25, 350, 'plataforma');
-        this.planta3.scale.setTo(1.4, 0.0250);//la escalamos
+        this.planta3.scale.setTo(8, 2);//la escalamos
         this.planta3.body.immovable=true;//la hacemos inmovible
         this.planta4=this.plataformas.create(25, 250, 'plataforma');
-        this.planta4.scale.setTo(1.4, 0.0250);//la escalamos
+        this.planta4.scale.setTo(8, 2);//la escalamos
         this.planta4.body.immovable=true;//la hacemos inmovible
         this.planta5=this.plataformas.create(25, 150, 'plataforma');
-        this.planta5.scale.setTo(1.4, 0.0250);//la escalamos
+        this.planta5.scale.setTo(8, 2);//la escalamos
         this.planta5.body.immovable=true;//la hacemos inmovible
         this.planta6=this.plataformas.create(25, 50, 'plataforma');
-        this.planta6.scale.setTo(1.4, 0.0250);//la escalamos
+        this.planta6.scale.setTo(8, 2);//la escalamos
         this.planta6.body.immovable=true;//la hacemos inmovible
 
+
+        this.escalera1 = new Escalera();
         //ESCALERAS
-        //hacemos lo mismo con las escaleras
+        /*//hacemos lo mismo con las escaleras
         this.escaleras=game.add.group();
         this.escaleras.enableBody=true;
 
@@ -82,12 +78,14 @@ var playScene={
         //si se pulsa arriba o abajo mario sube o baja por las escaleras
         if(this.cursors.up.isDown)this.mario.escaleras(-75);
         else if(this.cursors.down.isDown)this.mario.escaleras(75);
+        else if (this.mario._sube) this.mario.mario.body.velocity.y = 0;
     },
 
     //gestiona las colisiones
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo puedeSubir de este
-        if(game.physics.arcade.overlap(this.mario.mario, this.escaleras))this.mario.puedeSubir();
+        if(this.mario.mario.body.x > this.escalera1.getX() - 10 && this.mario.mario.body.x < this.escalera1.getX() + 10 && 
+        this.mario.mario.body.y < this.escalera1.getY() + 72 && this.mario.mario.body.y > this.escalera1.getY() - 30)this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
