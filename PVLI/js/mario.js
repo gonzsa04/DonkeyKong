@@ -11,16 +11,19 @@ class Mario{
         game.physics.arcade.enable(this._mario);//habilitamos fisicas, gravedad, etc.
         this._mario.body.gravity.y=400;
         this._mario.body.colliderWorldBounds=true;
-        this._mario.scale.setTo(0.15, 0.15);//lo escalamos a gusto
+        //this._mario.scale.setTo(0.15, 0.15);//lo escalamos a gusto
+        this._mario.anchor.setTo(0.5, 0.5);
     }
 
     //mueve a mario a la izquierda a una velocidad
     mueveIzquierda(){
+        this._mario.scale.setTo(-1, 1);
         if(!this._inmovil)this._mario.body.velocity.x=-this._vel;
     }
 
     //mueve a mario a la derecha a una velocidad
     mueveDerecha(){
+        this._mario.scale.setTo(1, 1);
         if(!this._inmovil)this._mario.body.velocity.x=this._vel;
     }
 
