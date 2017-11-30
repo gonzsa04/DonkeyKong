@@ -4,7 +4,9 @@ class Mario{
     constructor(){
         this._mario=game.add.sprite(100, 520, 'mario');//carga el sprite de Mario
         this._jump=true;//indica si mario puede saltar
+        this._jumpLadder = false;
         this._sube=false;//indica si mario puede subir escaleras
+        this._atraviesa = false;
         this._inmovil=false;
         this._vel=150;//velocidad a la que se mueve mario
         this._alturaSalto=-150;//altura a la que salta mario
@@ -32,6 +34,7 @@ class Mario{
         if(this._jump){
             this._mario.body.velocity.y=this._alturaSalto;
             this._jump=false;
+            this._jumpLadder = true;
         }
     }
 
@@ -39,7 +42,6 @@ class Mario{
     escaleras(velEscalera){
         if(this._sube){
         this._mario.body.velocity.y=velEscalera;
-        this._mario.body.gravity.y=0;
         this._inmovil=true;
         }
     }
@@ -47,20 +49,27 @@ class Mario{
     //update del jugador, mira si mario choca con el suelo
     update(plataformas){
         //mario colisiona con las plataformas
-        game.physics.arcade.collide(this._mario, plataformas);
+        if(!this._atraviesa)game.physics.arcade.collide(this._mario, plataformas);
+        this._atraviesa = false;
         this._mario.body.velocity.x=0;//reiniciamos su velocidad por si se hubiera dejado de pulsar las teclas
         if(!this._sube)this._mario.body.gravity.y=400;//lo mismo con su gravedad (si no esta subiendo una escalera)
+        else this._mario.body.gravity.y=0;
         if(this._mario.body.touching.down){
              this._jump=true;//cuando toca el suelo puede volver a saltar
              this._inmovil=false;
+             this._jumpLadder = false;
         }
+        console.log(this._mario.body.velocity.y);
     }
 
     //cuando mario pierde se destruye
     morir(){ this._mario.kill(); }
 
     //se llama cuando estas sobre una escalera, te permite subirla
-    puedeSubir(){ this._sube=true; }
+    puedeSubir(){ 
+      if (!this._jumpLadder)
+        this._sube=true;
+     }
 
     //se llama cuando sales de una escalera, ya no puedes subirla
     noPuedeSubir(){ 

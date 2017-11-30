@@ -3,38 +3,12 @@ var playScene={
     create: function(){
         this.cursors=game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
 
-        //PLATAFORMAS
-        //metemos todas las plataformas en un mismo grupo,
-        this.plataformas=game.add.group();//asi tratamos todas a la vez y no una por una
-        this.plataformas.enableBody=true;//añadimos fisicas a las plataformas
-
-        //metemos en el grupo de plataformas la primera planta del juego
-        this.planta1=this.plataformas.create(0, 550, 'plataforma');
-        this.planta1.scale.setTo(9, 2);//la escalamos
-        this.planta1.body.immovable=true;//la hacemos inmovible
-        //lo mismo con las demas plantas
-        this.planta2=this.plataformas.create(25, 450, 'plataforma');
-        this.planta2.scale.setTo(7.5, 2);//la escalamos
-        this.planta2.body.immovable=true;//la hacemos inmovible
-        this.planta3=this.plataformas.create(60, 350, 'plataforma');
-        this.planta3.scale.setTo(7.5, 2);//la escalamos
-        this.planta3.body.immovable=true;//la hacemos inmovible
-        this.planta4=this.plataformas.create(25, 250, 'plataforma');
-        this.planta4.scale.setTo(7.5, 2);//la escalamos
-        this.planta4.body.immovable=true;//la hacemos inmovible
-        this.planta5=this.plataformas.create(60, 150, 'plataforma');
-        this.planta5.scale.setTo(7.5, 2);//la escalamos
-        this.planta5.body.immovable=true;//la hacemos inmovible
-        this.planta6=this.plataformas.create(25, 50, 'plataforma');
-        this.planta6.scale.setTo(7.5, 2);//la escalamos
-        this.planta6.body.immovable=true;//la hacemos inmovible
-
         //ESCALERAS
         //hacemos lo mismo con las escaleras
         this.escaleras=game.add.group();
         this.escaleras.enableBody=true;
 
-        this.escalera1=this.escaleras.create(545, 445, 'escaleras');
+        this.escalera1=this.escaleras.create(545, 448, 'escaleras');
         this.escalera1.scale.setTo(3,4);
         this.escalera1.body.immovable=true;
         this.escalera2=this.escaleras.create(30, 345, 'escaleras');
@@ -46,21 +20,31 @@ var playScene={
         this.escalera5=this.escaleras.create(545, 45, 'escaleras');
         this.escalera5.scale.setTo(3,4);
 
-        //CAPAS PARA LAS ESCALERAS  
-        //metemos todas las CAPAS PARA LAS ESCALERAS en un mismo grupo,
-        this.capas=game.add.group();//asi tratamos todas a la vez y no una por una
-        
-        this.capa1=this.capas.create(25, 450, 'plataforma');
-        this.capa1.scale.setTo(8, 2);//la escalamos
-        this.capa2=this.capas.create(25, 350, 'plataforma');
-        this.capa2.scale.setTo(8, 2);//la escalamos
-        this.capa3=this.capas.create(25, 250, 'plataforma');
-        this.capa3.scale.setTo(8, 2);//la escalamos
-        this.capa4=this.capas.create(25, 150, 'plataforma');
-        this.capa4.scale.setTo(8, 2);//la escalamos
-        this.capa5=this.capas.create(25, 50, 'plataforma');
-        this.capa5.scale.setTo(8, 2);//la escalamos
-        
+        //PLATAFORMAS
+        //metemos todas las plataformas en un mismo grupo,
+        this.plataformas=game.add.group();//asi tratamos todas a la vez y no una por una
+        this.plataformas.enableBody=true;//añadimos fisicas a las plataformas
+
+        //metemos en el grupo de plataformas la primera planta del juego
+        this.planta1=this.plataformas.create(0, 550, 'plataforma');
+        this.planta1.scale.setTo(9, 2);//la escalamos
+        this.planta1.body.immovable=true;//la hacemos inmovible
+        //lo mismo con las demas plantas
+        this.planta2=this.plataformas.create(0, 450, 'plataforma');
+        this.planta2.scale.setTo(9, 2);//la escalamos
+        this.planta2.body.immovable=true;//la hacemos inmovible
+        this.planta3=this.plataformas.create(0, 350, 'plataforma');
+        this.planta3.scale.setTo(9, 2);//la escalamos
+        this.planta3.body.immovable=true;//la hacemos inmovible
+        this.planta4=this.plataformas.create(0, 250, 'plataforma');
+        this.planta4.scale.setTo(9, 2);//la escalamos
+        this.planta4.body.immovable=true;//la hacemos inmovible
+        this.planta5=this.plataformas.create(0, 150, 'plataforma');
+        this.planta5.scale.setTo(9, 2);//la escalamos
+        this.planta5.body.immovable=true;//la hacemos inmovible
+        this.planta6=this.plataformas.create(0, 50, 'plataforma');
+        this.planta6.scale.setTo(9, 2);//la escalamos
+        this.planta6.body.immovable=true;//la hacemos inmovible
 
         //PRINCESA
         this.princesa=game.add.group();
@@ -98,10 +82,15 @@ var playScene={
     //gestiona las colisiones
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo puedeSubir de este
-        if(game.physics.arcade.overlap(this.mario.mario, this.escaleras))this.mario.puedeSubir();
+        if(game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeAtravesar, null, this))this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
+    },
+
+    PuedeAtravesar: function(mario, escaleras)
+    {
+        if(mario.y < escaleras.y + escaleras.height*2/3) this.mario._atraviesa = true;
     },
 
     //metodo llamado cuando ganamos
