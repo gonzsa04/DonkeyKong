@@ -76,21 +76,22 @@ var playScene={
         //si se pulsa arriba o abajo mario sube o baja por las escaleras
         if(this.cursors.up.isDown)this.mario.escaleras(-75);
         else if(this.cursors.down.isDown)this.mario.escaleras(75);
-        else if (this.mario._sube) this.mario.mario.body.velocity.y = 0;
     },
 
     //gestiona las colisiones
     colisiones: function(){
-        //si mario esta sobre una escalera, llama al metodo puedeSubir de este
-        if(game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeAtravesar, null, this))this.mario.puedeSubir();
-        else this.mario.noPuedeSubir();
+        //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
+        if(!game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
     },
 
-    PuedeAtravesar: function(mario, escaleras)
-    {
-        if(mario.y < escaleras.y + escaleras.height*2/3) this.mario._atraviesa = true;
+    //si mario esta justo sobre la escalera puede subirla, si no no
+    //si se encuentra en las dos terceras partes de la escalera que esta subiendo podrá atravesar el muro de encima
+    PuedeSubir: function(mario, escaleras){
+        if(mario.x < escaleras.x + escaleras.width*4/5 && mario.x > escaleras.x)this.mario.puedeSubir();
+        else this.mario.noPuedeSubir();
+        if(mario.y < escaleras.y + escaleras.height*2/3) this.mario.atraviesa();
     },
 
     //metodo llamado cuando ganamos
