@@ -4,26 +4,21 @@ var playScene={
         this.cursors=game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
 
         //ESCALERAS
-        //hacemos lo mismo con las escaleras
-        this.escaleras=game.add.group();
-        this.escaleras.enableBody=true;
+        //metemos todas las escaleras en un mismo grupo,
+        this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
 
         this.escalera1=this.escaleras.create(545, 448, 'escaleras');
-        this.escalera1.scale.setTo(3,4);
-        this.escalera1.body.immovable=true;
         this.escalera2=this.escaleras.create(30, 345, 'escaleras');
-        this.escalera2.scale.setTo(3,4);
         this.escalera3=this.escaleras.create(545, 245, 'escaleras');
-        this.escalera3.scale.setTo(3,4);
         this.escalera4=this.escaleras.create(30, 145, 'escaleras');
-        this.escalera4.scale.setTo(3,4);
         this.escalera5=this.escaleras.create(545, 45, 'escaleras');
-        this.escalera5.scale.setTo(3,4);
+        this.escaleras.setAll('scale.x', 3);//escalamos las escaleras
+        this.escaleras.setAll('scale.y', 4);
+        this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //PLATAFORMAS
-        //metemos todas las plataformas en un mismo grupo,
-        this.plataformas=game.add.group();//asi tratamos todas a la vez y no una por una
-        this.plataformas.enableBody=true;//añadimos fisicas a las plataformas
+        //lo mismo con las plataformas
+        this.plataformas=game.add.physicsGroup();
 
         //metemos en el grupo de plataformas la primera planta del juego
         this.planta1=this.plataformas.create(0, 550, 'plataforma');
@@ -47,10 +42,9 @@ var playScene={
         this.planta6.body.immovable=true;//la hacemos inmovible
 
         //PRINCESA
-        this.princesa=game.add.group();
-        this.princesa.enableBody=true;
-        this.princesa1=this.princesa.create(50, 0, 'princesa');
-        this.princesa1.scale.setTo(0.1, 0.1);
+        //princesa a la que rescatar
+        this.princesa=game.add.sprite(50, 0, 'princesa');
+        game.physics.arcade.enable(this.princesa);
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
@@ -82,8 +76,8 @@ var playScene={
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
-        //si mario llega hasta la princesa gana
-        if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.ganar();
+        //si mario llega hasta la princesa gana (true)
+        if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.fin(true);
     },
 
     //si mario esta justo sobre la escalera puede subirla, si no no
@@ -94,15 +88,15 @@ var playScene={
         if(mario.y < escaleras.y + escaleras.height*2/3) this.mario.atraviesa();
     },
 
-    //metodo llamado cuando ganamos
-    ganar: function(){
+    //metodo llamado cuando ganamos (true) o perdemos (false)
+    fin: function(ganar){
+        //eliminamos todas las entidades
+        this.escaleras.callAll('kill');
+        this.plataformas.callAll('kill');
+        this.princesa.kill();
         this.mario.morir();
-        game.state.start('ganar');
-    },
-
-    //metodo llamado cuando perdemos
-    perder: function(){
-        this.mario.morir();
-        game.state.start('perder');
+        //llamamos al menu de ganar o perder
+        if(ganar) game.state.start('ganar');
+        else game.state.start('perder');
     }
 };
