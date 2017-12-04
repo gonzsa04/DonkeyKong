@@ -16,7 +16,15 @@ var playScene={
         this.escaleras.setAll('scale.y', 4);
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
-        //PLATAFORMAS
+        //MAPA
+        //cargamos un mapa de tiled con las plataformas del nivel1
+        this.map=game.add.tilemap('map');
+        this.map.addTilesetImage('plataforma');
+        this.layer=this.map.createLayer('Capa de Patrones 1');
+        this.map.setCollisionBetween(1, 2000, true, this.layer);
+        this.layer.resizeWorld();
+
+        /*//PLATAFORMAS
         //lo mismo con las plataformas
         this.plataformas=game.add.physicsGroup();
 
@@ -39,7 +47,7 @@ var playScene={
         this.planta5.body.immovable=true;//la hacemos inmovible
         this.planta6=this.plataformas.create(0, 50, 'plataforma');
         this.planta6.scale.setTo(9, 2);//la escalamos
-        this.planta6.body.immovable=true;//la hacemos inmovible
+        this.planta6.body.immovable=true;//la hacemos inmovible*/
 
         //PRINCESA
         //princesa a la que rescatar
@@ -48,13 +56,13 @@ var playScene={
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
-        this.mario=new Mario();
+        this.mario=new Mario(100, 10);
 
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
 
     update: function(){
-        this.mario.update(this.plataformas);//llamamos al update de mario
+        this.mario.update(this.layer);//llamamos al update de mario
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
     },
