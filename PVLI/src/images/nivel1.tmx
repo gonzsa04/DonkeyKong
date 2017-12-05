@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2017.11.22" orientation="orthogonal" renderorder="right-down" width="300" height="300" tilewidth="2" tileheight="2" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="300" height="300" tilewidth="2" tileheight="2" nextobjectid="1">
  <tileset firstgid="1" source="plataforma.tsx"/>
  <layer name="Capa de Patrones 1" width="300" height="300">
   <data encoding="csv">
