@@ -4,7 +4,7 @@ class Mario{
     constructor(x, y){
         this._mario=game.add.sprite(x, y, 'mario');//carga el sprite de Mario
         this._jump=true;//indica si mario puede saltar
-        this._limiteIzq = 70;
+        this._limiteIzq = 70;//limites del mapa
         this._limiteDrcha = 530;
         this._sube=false;//indica si mario puede subir escaleras
         this._subiendo=false;//indica si mario esta subiendo escaleras
@@ -14,18 +14,17 @@ class Mario{
         this._alturaSalto=-150;//altura a la que salta mario
         game.physics.arcade.enable(this._mario);//habilitamos fisicas, gravedad, etc.
         this._mario.body.gravity.y=400;
-        this._mario.body.colliderWorldBounds=true;
-        this._mario.body.setSize(this._mario.width, this._mario.height/5);
+        this._mario.body.setSize(this._mario.width, this._mario.height/5);//collider de mario, solo en sus pies
         this._mario.anchor.setTo(0.5, 1);//establecemos su centro en sus pies
     }
 
-    //mueve a mario a la izquierda a una velocidad si puede hacerlo
+    //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
     mueveIzquierda(){
         this._mario.scale.setTo(-1, 1);//se de la vuelta
         if(!this._inmovil && this._mario.x > this._limiteIzq)this._mario.body.velocity.x=-this._vel;
     }
 
-    //mueve a mario a la derecha a una velocidad si puede hacerlo
+    //mueve a mario a la derecha a una velocidad si puede hacerlo y si no se sale del mapa
     mueveDerecha(){
         this._mario.scale.setTo(1, 1);
         if(!this._inmovil && this._mario.x < this._limiteDrcha)this._mario.body.velocity.x=this._vel;

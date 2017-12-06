@@ -48,7 +48,7 @@ var playScene={
     },
 
     update: function(){
-        //game.debug.body(this.mario.mario);
+        //game.debug.body(this.mario.mario);//vemos en pantalla el collider de mario (debug)
         this.mario.update(this.layer);//llamamos al update de mario
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
@@ -81,8 +81,6 @@ var playScene={
         if(mario.x < escaleras.x + escaleras.width*4/5 && mario.x > escaleras.x)this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
         if(mario.y < escaleras.y + escaleras.height*3/4) this.mario.atraviesa();
-        console.log(mario.y);
-        console.log(escaleras.y + escaleras.height*3/4);
     },
 
     //metodo llamado cuando ganamos (true) o perdemos (false)
