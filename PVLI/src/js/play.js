@@ -74,8 +74,8 @@ var playScene={
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
-        //si los barriles chocan con una escalera se llama a PuedeBajar
-        game.physics.arcade.overlap(this.barril.barril, this.escaleras, this.PuedeBajar, null, this);
+        //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
+        if(!game.physics.arcade.overlap(this.barril.barril, this.escaleras, this.PuedeBajar, null, this)) this.barril.noDecidido();
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.fin(true);
         //si mario choca con algun barril pierde

@@ -5,6 +5,7 @@ class Barril{
         this._barril=game.add.sprite(x, y, 'barril');//carga el sprite de barril
         this._vel = 50;//velocidad del barril
         this._atraviesa=false;//le permite atravesar muros
+        this._baja=-1;//variable que elige si baja o no por una escalera
         this._cambia = false;//indica si debe cambiar de velocidad
         game.physics.arcade.enable(this._barril);//habilitamos fisicas, gravedad, etc.
         this._barril.body.gravity.y=400;
@@ -34,15 +35,22 @@ class Barril{
 
     //decide si baja por una escalera o no
     bajaOno(){
-        var baja = Math.floor(Math.random()*2);
-        if(baja == 1){
-            this._atraviesa=true;
-            this._barril.body.velocity.x=0;
+        //si aun no se ha decidido, se elige si baja o no (cuando deje de colisionar con una escalera se volvera
+        //a marcar como no decidido para futuras escaleras)
+        if(this._baja == -1){
+            this._baja = Math.floor(Math.random()*2);
+            if(this._baja == 1){
+                this._atraviesa=true;
+                this._barril.body.velocity.x=0;
+            }
         }
     }
 
     //deja de atravesar muros
-    noAtravieses(){ this._atraviesa=false; }
+    noAtravieses(){ this._atraviesa = false; }
+
+    //marca a la variable que decide si se baja o no como no decidido
+    noDecidido(){ this._baja = -1; }
 
     //devuelve el barril
     get barril(){ return this._barril; }
