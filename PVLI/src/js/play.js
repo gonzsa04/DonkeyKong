@@ -40,6 +40,8 @@ var playScene={
         this.princesa=game.add.sprite(220, 30, 'princesa');
         game.physics.arcade.enable(this.princesa);
 
+        this.barril=new Barril(150, 150);
+
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
         this.mario=new Mario(200, 520);
@@ -50,6 +52,7 @@ var playScene={
     update: function(){
         //game.debug.body(this.mario.mario);//vemos en pantalla el collider de mario (debug)
         this.mario.update(this.layer);//llamamos al update de mario
+        this.barril.update(this.layer);
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
     },
@@ -71,8 +74,20 @@ var playScene={
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
+        //si los barriles chocan con una escalera se llama a PuedeBajar
+        game.physics.arcade.overlap(this.barril.barril, this.escaleras, this.PuedeBajar, null, this);
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.fin(true);
+        //si mario choca con algun barril pierde
+        if(game.physics.arcade.overlap(this.mario.mario, this.barril.barril)) this.fin(false);
+    },
+
+    //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)
+    PuedeBajar: function(barril, escaleras){
+        if(barril.x >= escaleras.x + escaleras.width*2/5 && barril.x <= escaleras.x + escaleras.width*4/5){
+            if(barril.y < escaleras.y + escaleras.height*3/4)this.barril.bajaOno();
+            else this.barril.noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
+        }
     },
 
     //si mario esta justo sobre la escalera puede subirla, si no no

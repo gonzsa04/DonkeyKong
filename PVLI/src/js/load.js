@@ -9,6 +9,7 @@ var loadScene={
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
 		game.load.image('princesa', 'images/princesa.png');//sprite de la princesa
 		game.load.tilemap('map', 'images/nivel1.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 1
+		game.load.image('barril', 'images/barril.png');//barril
 	},
 	//create es como Start en Unity
 	create:function(){
