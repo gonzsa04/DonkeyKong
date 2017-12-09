@@ -40,7 +40,7 @@ var playScene={
         this.princesa=game.add.sprite(220, 30, 'princesa');
         game.physics.arcade.enable(this.princesa);
 
-        this.barril=new Barril(150, 150);
+        this.barril=new Barril(150, 154);
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo

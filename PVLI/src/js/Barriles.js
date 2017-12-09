@@ -3,7 +3,9 @@ class Barril{
     //constructora de los barriles
     constructor(x, y){
         this._barril=game.add.sprite(x, y, 'barril');//carga el sprite de barril
-        this._vel = 50;//velocidad del barril
+        this._vel = 100;//velocidad del barril
+        this._velX = 10;
+        this._velY = 80;
         this._atraviesa=false;//le permite atravesar muros
         this._baja=-1;//variable que elige si baja o no por una escalera
         this._cambia = false;//indica si debe cambiar de velocidad
@@ -25,11 +27,17 @@ class Barril{
             this.muevete();//lo mueve
         }
         //si ha caido de una plataforma a otra cambia de direccion
-        if(this._barril.body.velocity.y >= 100)this._cambia=true;
-        if(this._barril.body.onFloor() && this._cambia){
+        if(this._barril.body.velocity.y >= this._velY){
+            this._cambia=true;
+            this._barril.body.velocity.y = this._velY;
+            if (this._barril.body.velocity.x != 0) this._barril.body.velocity.x = this._velX;
+        }
+        if(this._barril.body.onFloor()){
+            if (this._cambia){
             this._atraviesa=false;
             this._cambia=false;
             this._vel=-this._vel;
+            }
         }
     }
 
