@@ -50,7 +50,7 @@ var playScene={
     },
 
     update: function(){
-        //game.debug.body(this.mario.mario);//vemos en pantalla el collider de mario (debug)
+        //game.debug.body(this.barril.gameObject);//vemos en pantalla el collider de mario (debug)
         this.mario.update(this.layer);//llamamos al update de mario
         this.barril.update(this.layer);
         this.teclas();//llamamos al gestor del input

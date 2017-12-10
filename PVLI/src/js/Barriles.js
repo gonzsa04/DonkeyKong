@@ -7,6 +7,8 @@ class Barril extends GameObject{
         this._velY = 80;
         this._baja=-1;//variable que elige si baja o no por una escalera
         this._cambia = false;//indica si debe cambiar de velocidad
+        //redimensionamos su collider
+        this._gameObject.body.setSize(this._gameObject.width, this._gameObject.height*3/5);
     }
 
     //mueve al barril
