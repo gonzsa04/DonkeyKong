@@ -10,6 +10,8 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
+        this._velMax = 125;
+        this._velMin = 75;
     }
 
     //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
@@ -44,6 +46,7 @@ class Mario extends GameObject{
 
     //update del jugador, mira si mario choca con el suelo
     update(plataformas){
+        //game.debug.body(this._gameObject);
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -56,6 +59,8 @@ class Mario extends GameObject{
             this._gameObject.body.velocity.y=0;//como velocidad en y seran de 0
         }
         if(this._gameObject.body.onFloor()){
+            if(this._gameObject.body.onWall())this._vel = this._velMax;
+            else this._vel = this._velMin;
             this._jump=true;//cuando toca el suelo puede volver a saltar
             this._inmovil=false;//puede moverse en el eje x otra vez
             this._subiendo=false;//ya no esta subiendo
