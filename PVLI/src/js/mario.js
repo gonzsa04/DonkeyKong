@@ -10,8 +10,8 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
-        this._velMax = 125;
-        this._velMin = 75;
+        this._velMax = 125;//velocidad a la que sube las rampas
+        this._velMin = 75;//velocidad normal a la que camina
     }
 
     //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
@@ -58,9 +58,11 @@ class Mario extends GameObject{
             this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad 
             this._gameObject.body.velocity.y=0;//como velocidad en y seran de 0
         }
+        //si toca el suelo
         if(this._gameObject.body.onFloor()){
+            //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
             if(this._gameObject.body.onWall())this._vel = this._velMax;
-            else this._vel = this._velMin;
+            else this._vel = this._velMin;//si no, vuelve a su velocidad normal
             this._jump=true;//cuando toca el suelo puede volver a saltar
             this._inmovil=false;//puede moverse en el eje x otra vez
             this._subiendo=false;//ya no esta subiendo

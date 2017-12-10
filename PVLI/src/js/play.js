@@ -66,8 +66,8 @@ var playScene={
         //si se pulsa espacio mario salta
         if(this.SpaceKey.isDown)this.mario.saltar();
         //si se pulsa arriba o abajo mario sube o baja por las escaleras
-        if(this.cursors.up.isDown)this.mario.escaleras(-75);
-        else if(this.cursors.down.isDown)this.mario.escaleras(75);
+        if(this.cursors.up.isDown)this.mario.escaleras(-50);
+        else if(this.cursors.down.isDown)this.mario.escaleras(50);
     },
 
     //gestiona las colisiones
