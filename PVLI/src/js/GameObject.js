@@ -1,8 +1,8 @@
 //clase GameObject para las entidades del juego
 class GameObject{
     //constructora de la clase
-    constructor(x, y, nombre){
-        this._gameObject=game.add.sprite(x, y, nombre);//carga el sprite
+    constructor(x, y, nombre, frame){
+        this._gameObject=game.add.sprite(x, y, nombre, frame);//carga el sprite
         this._vel = 125;//velocidad a la que se mueve
         this._atraviesa = false;//indica si puede atravesar muros
         game.physics.arcade.enable(this._gameObject);//habilitamos fisicas, gravedad, etc.

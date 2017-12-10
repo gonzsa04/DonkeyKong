@@ -40,11 +40,17 @@ var playScene={
         this.princesa=game.add.sprite(220, 30, 'princesa');
         game.physics.arcade.enable(this.princesa);
 
-        this.barril=new Barril(150, 154, 'barril');
+       //BARRILES
+       this.barril=new Barril(150, 155, 'barril');
+       /*this.barriles=game.add.group();
+       for(var i=0;i<10;i++) this.barriles.create(new Barril(150, 155, 'barril'));
+       this.barriles.createMultiple(10, new Barril(150, 155, 'barril'));
+       this.barril = this._barriles.getFirstExists(false);
+       this.barril.reset(150, 155);*/
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
-        this.mario=new Mario(200, 520, 'mario');
+        this.mario=new Mario(200, 520, 'marioAnim');
 
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
@@ -63,6 +69,8 @@ var playScene={
         if(this.cursors.left.isDown)this.mario.mueveIzquierda();
         //lo mismo con derecha
         else if(this.cursors.right.isDown)this.mario.mueveDerecha();
+        //si no se pulsa ninguna se queda parado (animacion)
+        else this.mario.noCorras();
         //si se pulsa espacio mario salta
         if(this.SpaceKey.isDown)this.mario.saltar();
         //si se pulsa arriba o abajo mario sube o baja por las escaleras
