@@ -40,11 +40,11 @@ var playScene={
         this.princesa=game.add.sprite(220, 30, 'princesa');
         game.physics.arcade.enable(this.princesa);
 
-        this.barril=new Barril(150, 154);
+        this.barril=new Barril(150, 154, 'barril');
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
-        this.mario=new Mario(200, 520);
+        this.mario=new Mario(200, 520, 'mario');
 
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
@@ -73,13 +73,13 @@ var playScene={
     //gestiona las colisiones
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
-        if(!game.physics.arcade.overlap(this.mario.mario, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
+        if(!game.physics.arcade.overlap(this.mario.gameObject, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
         //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
-        if(!game.physics.arcade.overlap(this.barril.barril, this.escaleras, this.PuedeBajar, null, this)) this.barril.noDecidido();
+        if(!game.physics.arcade.overlap(this.barril.gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barril.noDecidido();
         //si mario llega hasta la princesa gana (true)
-        if(game.physics.arcade.overlap(this.mario.mario, this.princesa)) this.fin(true);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
         //si mario choca con algun barril pierde
-        if(game.physics.arcade.overlap(this.mario.mario, this.barril.barril)) this.fin(false);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.barril.gameObject)) this.fin(false);
     },
 
     //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)
