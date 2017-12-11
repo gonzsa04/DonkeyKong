@@ -28,6 +28,7 @@ var playScene={
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //MAPA
+        this.hudEstat = game.add.image(0, 0, 'hud');
         //cargamos un mapa de tiled con las plataformas del nivel1
         this.map=game.add.tilemap('map');
         this.map.addTilesetImage('plataforma');
