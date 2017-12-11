@@ -63,7 +63,7 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de mario (debug)
+        //game.debug.body(this.barriles[0].gameObject);//vemos en pantalla el collider de mario (debug)
         this.mario.update(this.layer);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         this.teclas();//llamamos al gestor del input
@@ -83,6 +83,7 @@ var playScene={
         //si se pulsa arriba o abajo mario sube o baja por las escaleras
         if(this.cursors.up.isDown)this.mario.escaleras(-50);
         else if(this.cursors.down.isDown)this.mario.escaleras(50);
+        else this.mario.noEscales();
     },
     //----------------------------------------------------------------------------------------------------------------------
 
@@ -98,7 +99,7 @@ var playScene={
         //para cada uno de los barriles
         for(var i = 0; i < this.barriles.length; i++){
         //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
-        //if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
+        if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
         //si mario choca con algun barril pierde
         if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)) this.fin(false);
         }
@@ -110,9 +111,10 @@ var playScene={
     //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)
     PuedeBajar: function(barril, escaleras){
         if(barril.x >= escaleras.x + escaleras.width*2/5 && barril.x <= escaleras.x + escaleras.width*4/5){
-            console.log('hsxb');
-            if(barril.y < escaleras.y + escaleras.height*3/4) barril.bajaOno();
-            else barril.noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
+            var i = 0;
+            while(i<this.barriles.length && this.barriles[i].gameObject != barril)i++;
+            if(barril.y < escaleras.y + escaleras.height*3/4) this.barriles[i].bajaOno();
+            else this.barriles[i].noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
         }
     },
 
@@ -127,7 +129,7 @@ var playScene={
     //genera barriles de forma aleatoria
     GeneraBarriles: function(numRand){
         if(this.count == 0) this.rand = Math.random()*numRand;//generamos un random entre 0 y numRand
-        if(this.count >= this.rand && this.rand != 0){//si el contador llega al random
+        if(this.count >= this.rand){//si el contador llega al random
             var i = 0;
             while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
             if(i<this.barriles.length) this.barriles[i].spawn(150, 170);//lo spawneamos

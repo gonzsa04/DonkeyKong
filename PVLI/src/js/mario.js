@@ -21,7 +21,7 @@ class Mario extends GameObject{
         //ANIMACIONES
         this._anim = this._gameObject.animations;//todas se guardaran en anim
         this._anim.add('stop', [0], null);//parado
-        this._anim.add('walk', [1,2], 6, true);//andando
+        this._anim.add('walk', [1,0,2], 20, true);//andando
         this._anim.add('saltar', [11], null);//salto
         this._anim.add('escalera', [9,10], 6, true);//en una escalera
         this._anim.add('escaleraStop', [9], null);//parado en una escalera
@@ -72,6 +72,7 @@ class Mario extends GameObject{
             this._gameObject.body.velocity.y=velEscalera;
             this._inmovil=true;//no puede moverse en el eje x
             this._jump=false;//no puede saltar
+            this._anim.play("escalera");
         }
     }
     //-----------------------------------------------------------------------------
@@ -81,6 +82,7 @@ class Mario extends GameObject{
 
     //update del jugador, mira si mario choca con el suelo
     update(plataformas){
+        if(this._gameObject.body.velocity.y != 0)
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -89,8 +91,8 @@ class Mario extends GameObject{
         if(!this._subiendo)this._gameObject.body.gravity.y=400;//lo mismo con su gravedad 
         //(si no esta subiendo una escalera)
         else {
-            this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad 
-            this._gameObject.body.velocity.y=0;//como velocidad en y seran de 0
+            this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad
+            this._gameObject.body.velocity.y=0;//como velocidad se reinician
         }
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
@@ -110,8 +112,9 @@ class Mario extends GameObject{
 
     //se llama cuando estas sobre una escalera, te permite subirla
     puedeSubir(){ 
-      if (this._jump)//si no has saltado
-        this._sube=true;
+        if (this._jump){//si no has saltado
+        this._sube=true;    
+        }
      }
 
     //se llama cuando sales de una escalera, ya no puedes subirla
@@ -130,6 +133,11 @@ class Mario extends GameObject{
          this._corriendo=false; 
          this._anim.play("stop");
          }
+    }
+
+    noEscales()
+    {
+        if(this._sube && this._subiendo) this._anim.play("escaleraStop");
     }
     //-----------------------------------------------------------------------
 }

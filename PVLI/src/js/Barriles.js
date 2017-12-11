@@ -9,8 +9,16 @@ class Barril extends GameObject{
         this._velY = 80;
         this._baja=-1;//variable que elige si baja o no por una escalera
         this._cambia = false;//indica si debe cambiar de velocidad
+        this._rotaAnim = false;
+        this._escaleraAnim = false;
         //redimensionamos su collider
-        this._gameObject.body.setSize(this._gameObject.width, this._gameObject.height*3/5);
+        this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*3/5);
+
+        //ANIMACIONES
+        this._anim = this._gameObject.animations;//todas se guardaran en anim
+        this._anim.add('rotate', [0,1,2,3], 8, true);//rotar
+        this._anim.add('escalera', [4,5], 6, true);//bajar escaleras
+        this._anim.play('rotate');
     }
     //--------------------------------------------------------------------------------------------
 
@@ -19,6 +27,8 @@ class Barril extends GameObject{
     //mueve al barril
     muevete(){
         this._gameObject.body.velocity.x=this._vel;
+        if(this._vel < 0) this._gameObject.scale.setTo(-1, 1);
+        else this._gameObject.scale.setTo(1, 1);
     }
     //--------------------------------------------------------------------------------------------
 
@@ -39,9 +49,14 @@ class Barril extends GameObject{
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
             if (this._cambia){//si puede cambiar de direccion lo hace
-            this._atraviesa=false;
-            this._cambia=false;
-            this._vel=-this._vel;
+                this._atraviesa=false;
+                this._cambia=false;
+                this._vel=-this._vel;
+                this._escaleraAnim = false;
+                if(!this._rotaAnim){ //Si puede rotar y no esta en una escalera
+                    this._anim.play("rotate");//se pone la animacion de rotar
+                    this._rotaAnim = true;
+                }
             }
         }
     }
@@ -58,6 +73,11 @@ class Barril extends GameObject{
             if(this._baja == 1){
                 this._atraviesa=true;
                 this._gameObject.body.velocity.x=0;
+                if(!this._escaleraAnim){//si puede bajar y esta en una escalera
+                    this._anim.play("escalera");//se pone la animacion de escalera
+                    this._escaleraAnim = true;
+                    this._rotaAnim = false;
+                }
             }
         }
     }
