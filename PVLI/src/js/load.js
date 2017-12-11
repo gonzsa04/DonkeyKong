@@ -3,13 +3,14 @@ var loadScene={
 	//preload es como awake en Unity, es usado para cargar assets normalmente
 	preload:function(){
 		//informamos de que esta cargando
-		/*this.game.load.baseURL = "https://github.com/gonzsa04/DonkeyKong/tree/master/PVLI/src/images";
-		this.game.load.crossOrigin = 'anonymous';*/
 		var loading=game.add.text(180, 250, 'Loading...', {font: '40px Courier', fill: '#FFF'})
-		game.load.image('mario', 'images/mario.png');//sprite de Mario
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
 		game.load.image('princesa', 'images/princesa.png');//sprite de la princesa
+		game.load.image('hud', 'images/hud.png');//hud del juego
+		game.load.tilemap('map', 'images/nivel1.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 1
+		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 6);//barril
+		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 36, 32, 21);//mario
 	},
 	//create es como Start en Unity
 	create:function(){
