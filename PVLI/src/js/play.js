@@ -8,27 +8,20 @@ var playScene={
         this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
 
         this.escalera1=this.escaleras.create(445, 501, 'escaleras');
-        this.escalera1.scale.setTo(2.3, 3);
         this.escalera2=this.escaleras.create(140, 407, 'escaleras');
-        this.escalera2.scale.setTo(2.3, 3);
         this.escalera3=this.escaleras.create(310, 403, 'escaleras');
-        this.escalera3.scale.setTo(2.3, 3.5);
+        this.escalera3.scale.setTo(1, 1.2);
         this.escalera4=this.escaleras.create(350, 325, 'escaleras');
-        this.escalera4.scale.setTo(2.3, 3.2);
         this.escalera5=this.escaleras.create(445, 331, 'escaleras');
-        this.escalera5.scale.setTo(2.3, 3);
         this.escalera6=this.escaleras.create(140, 250, 'escaleras');
-        this.escalera6.scale.setTo(2.3, 3);
         this.escalera7=this.escaleras.create(237, 245, 'escaleras');
-        this.escalera7.scale.setTo(2.3, 3);
         this.escalera8=this.escaleras.create(445, 175, 'escaleras');
-        this.escalera8.scale.setTo(2.3, 3);
-        this.escalera9=this.escaleras.create(310, 80, 'escaleras')
-        this.escalera9.scale.setTo(2.3, 3.5);
+        this.escalera9=this.escaleras.create(310, 80, 'escaleras');
+        this.escalera9.scale.setTo(1, 1.2);
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //MAPA
-        this.hudEstat = game.add.image(0, 0, 'hud');
+        game.add.image(0, 0, 'hud');
         //cargamos un mapa de tiled con las plataformas del nivel1
         this.map=game.add.tilemap('map');
         this.map.addTilesetImage('plataforma');
@@ -36,10 +29,26 @@ var playScene={
         this.map.setCollisionBetween(1, 300, true, this.layer);
         this.layer.resizeWorld();
 
+        //DECORADO
+        game.add.image(30, 107, 'decoBarril');
+        game.add.image(165, 40, 'decoEscaleras');
+        this.oilDrum = game.add.sprite(50, 520, 'drumOil');
+        this.oilDrum.animations.add('normal', [0,1], 2, true);
+        this.oilDrum.animations.play('normal');
+
         //PRINCESA
         //princesa a la que rescatar
-        this.princesa=game.add.sprite(220, 30, 'princesa');
+        this.princesa=game.add.sprite(220, 40, 'princesa');
+        this.princesa.animations.add('normal', [0,1,0,1,0,1,2,2,2], 6, true);
+        this.princesa.animations.play('normal');
         game.physics.arcade.enable(this.princesa);
+
+        //DK
+        //villano
+        this.DK=game.add.sprite(70, 107, 'DK');
+        this.DK.animations.add('normal', [0,1,2], 3, true);
+        this.DK.animations.play('normal');
+        game.physics.arcade.enable(this.DK);
 
        //BARRILES
        this.barriles=[];//array de barriles, inicialmente todos inexistentes
@@ -54,11 +63,11 @@ var playScene={
        this.GeneraBarriles(this.frecuenciaBarriles);//genera los barriles aleatoriamente
        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
 
-        //MARIO
-        //por ultimo el jugador, para que se pinte por encima de todo
-        this.mario=new Mario(200, 520, 'marioAnim');
+       //MARIO
+       //por ultimo el jugador, para que se pinte por encima de todo
+       this.mario=new Mario(200, 560, 'marioAnim');
 
-        this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
+       this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
 
 
