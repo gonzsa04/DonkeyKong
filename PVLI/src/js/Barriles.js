@@ -1,5 +1,7 @@
 //clase de los barriles, hereda de GameObject
 class Barril extends GameObject{
+
+    //-----------------------------------CONSTRUCTORA--------------------------------------------
     //constructora de los barriles
     constructor(x, y, nombre){
         super(x, y, nombre);//llama a constructora de GameObject
@@ -10,12 +12,18 @@ class Barril extends GameObject{
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width, this._gameObject.height*3/5);
     }
+    //--------------------------------------------------------------------------------------------
 
+
+    //--------------------------------------MOVIMIENTO--------------------------------------------
     //mueve al barril
     muevete(){
         this._gameObject.body.velocity.x=this._vel;
     }
+    //--------------------------------------------------------------------------------------------
 
+
+    //--------------------------------------UPDATE------------------------------------------------
     //update del barril, hace que choque con el suelo
     update(plataformas){
         if(!this._atraviesa) {
@@ -37,7 +45,10 @@ class Barril extends GameObject{
             }
         }
     }
+    //---------------------------------------------------------------------------------------------
 
+
+    //------------------------------------------AUXILIARES-----------------------------------------
     //decide si baja por una escalera o no
     bajaOno(){
         //si aun no se ha decidido, se elige si baja o no (cuando deje de colisionar con una escalera se volvera
@@ -56,4 +67,5 @@ class Barril extends GameObject{
 
     //marca a la variable que decide si se baja o no como no decidido
     noDecidido(){ this._baja = -1; }
+    //----------------------------------------------------------------------------------------------
 }

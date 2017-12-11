@@ -41,12 +41,17 @@ var playScene={
         game.physics.arcade.enable(this.princesa);
 
        //BARRILES
-       this.barril=new Barril(150, 155, 'barril');
-       /*this.barriles=game.add.group();
-       for(var i=0;i<10;i++) this.barriles.create(new Barril(150, 155, 'barril'));
-       this.barriles.createMultiple(10, new Barril(150, 155, 'barril'));
-       this.barril = this._barriles.getFirstExists(false);
-       this.barril.reset(150, 155);*/
+       this.barriles=[];//array de barriles, inicialmente todos inexistentes
+       this.barriles.push(new Barril(150, 155, 'barril'));//menos el primero
+       for(var i=1;i<10;i++){
+           this.barriles.push(new Barril(150, 155, 'barril'));
+           this.barriles[i].morir();
+       }
+       this.count = 0;
+       this.rand = 0;
+       this.frecuenciaBarriles = 5;//los barriles apareceran en un random entre 0 y esta variable
+       this.GeneraBarriles(this.frecuenciaBarriles);//genera los barriles aleatoriamente
+       game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
 
         //MARIO
         //por ultimo el jugador, para que se pinte por encima de todo
@@ -55,10 +60,12 @@ var playScene={
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
 
+
+    //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.barril.gameObject);//vemos en pantalla el collider de mario (debug)
+        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de mario (debug)
         this.mario.update(this.layer);//llamamos al update de mario
-        this.barril.update(this.layer);
+        for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
     },
@@ -77,24 +84,35 @@ var playScene={
         if(this.cursors.up.isDown)this.mario.escaleras(-50);
         else if(this.cursors.down.isDown)this.mario.escaleras(50);
     },
+    //----------------------------------------------------------------------------------------------------------------------
 
+
+    //----------------------------------------------------COLISIONES--------------------------------------------------------
     //gestiona las colisiones
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.gameObject, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
-        //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
-        if(!game.physics.arcade.overlap(this.barril.gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barril.noDecidido();
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
-        //si mario choca con algun barril pierde
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.barril.gameObject)) this.fin(false);
-    },
 
+        //para cada uno de los barriles
+        for(var i = 0; i < this.barriles.length; i++){
+        //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
+        //if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
+        //si mario choca con algun barril pierde
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)) this.fin(false);
+        }
+    },
+    //-----------------------------------------------------------------------------------------------------------------------
+
+
+    //-------------------------------------------------AUXILIARES------------------------------------------------------------
     //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)
     PuedeBajar: function(barril, escaleras){
         if(barril.x >= escaleras.x + escaleras.width*2/5 && barril.x <= escaleras.x + escaleras.width*4/5){
-            if(barril.y < escaleras.y + escaleras.height*3/4)this.barril.bajaOno();
-            else this.barril.noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
+            console.log('hsxb');
+            if(barril.y < escaleras.y + escaleras.height*3/4) barril.bajaOno();
+            else barril.noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
         }
     },
 
@@ -106,6 +124,21 @@ var playScene={
         if(mario.y < escaleras.y + escaleras.height*3/4) this.mario.atraviesa();
     },
 
+    //genera barriles de forma aleatoria
+    GeneraBarriles: function(numRand){
+        if(this.count == 0) this.rand = Math.random()*numRand;//generamos un random entre 0 y numRand
+        if(this.count >= this.rand && this.rand != 0){//si el contador llega al random
+            var i = 0;
+            while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
+            if(i<this.barriles.length) this.barriles[i].spawn(150, 170);//lo spawneamos
+            this.count=0;//se reinicia el contador y se vuelve a hacer un random
+            this.rand = Math.random()*numRand;
+        }
+    },
+
+    //suma cada segundo uno al contador, es el encargado de llamar a GeneraBarriles una vez por segundo
+    actualizaContador: function(){ this.count++; this.GeneraBarriles(this.frecuenciaBarriles);},
+
     //metodo llamado cuando ganamos (true) o perdemos (false)
     fin: function(ganar){
         //eliminamos a mario
@@ -114,4 +147,5 @@ var playScene={
         if(ganar) game.state.start('ganar');
         else game.state.start('perder');
     }
+    //-------------------------------------------------------------------------------------------------------------------------
 };

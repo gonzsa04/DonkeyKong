@@ -1,5 +1,7 @@
 //clase Mario, el jugador, hereda de GameObject
 class Mario extends GameObject{
+
+    //--------------------------------------CONSTRUCTORA-------------------------------------
     //constructora de Mario
     constructor(x, y, nombre){
         super(x, y, nombre);//llama a constructora de GamObject
@@ -12,22 +14,30 @@ class Mario extends GameObject{
         this._alturaSalto=-150;//altura a la que salta mario
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
-        this._corriendo = false;
-        this._anim = this._gameObject.animations;
-        this._anim.add('stop', [0], null);
-        this._anim.add('walk', [1,2], 6, true);
-        this._anim.add('saltar', [11], null);
-        this._anim.add('escalera', [9,10], 6, true);
-        this._anim.add('escaleraStop', [9], null);
-        this._anim.add('morir', [16,17,18,19,20], null);
+        this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
+        //redimensionamos su collider
+        this._gameObject.body.setSize(this._gameObject.width*2/3, this._gameObject.height/5);
+
+        //ANIMACIONES
+        this._anim = this._gameObject.animations;//todas se guardaran en anim
+        this._anim.add('stop', [0], null);//parado
+        this._anim.add('walk', [1,2], 6, true);//andando
+        this._anim.add('saltar', [11], null);//salto
+        this._anim.add('escalera', [9,10], 6, true);//en una escalera
+        this._anim.add('escaleraStop', [9], null);//parado en una escalera
+        this._anim.add('morir', [16,17,18,19,20], null);//muerto
     }
+    //--------------------------------------------------------------------------------------
+
+
+    //----------------------------------MOVIMIENTO------------------------------------------
 
     //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
     mueveIzquierda(){
-        this._gameObject.scale.setTo(-1, 1);//se de la vuelta
         if(!this._inmovil && this._gameObject.x > this._limiteIzq){
+            this._gameObject.scale.setTo(-1, 1);//se de la vuelta
             if(!this._corriendo && this._jump){
-                this._corriendo=true;
+                this._corriendo=true;//si esta corriendo y no saltando
                 this._anim.play('walk');
             }
             this._gameObject.body.velocity.x=-this._vel;
@@ -36,8 +46,8 @@ class Mario extends GameObject{
 
     //mueve a mario a la derecha a una velocidad si puede hacerlo y si no se sale del mapa
     mueveDerecha(){
-        this._gameObject.scale.setTo(1, 1);
         if(!this._inmovil && this._gameObject.x < this._limiteDrcha){
+            this._gameObject.scale.setTo(1, 1);
             if(!this._corriendo && this._jump){
                 this._corriendo=true;
                 this._anim.play('walk');
@@ -50,7 +60,7 @@ class Mario extends GameObject{
     saltar(){
         if(this._jump){
             this._jump=false;
-            this._anim.play("saltar");
+            this._anim.play("saltar");//anim de saltar
             this._gameObject.body.velocity.y=this._alturaSalto;
         }
     }
@@ -61,13 +71,16 @@ class Mario extends GameObject{
             this._subiendo=true;
             this._gameObject.body.velocity.y=velEscalera;
             this._inmovil=true;//no puede moverse en el eje x
-            this._jump=false;
+            this._jump=false;//no puede saltar
         }
     }
+    //-----------------------------------------------------------------------------
+
+
+    //--------------------------------UPDATE---------------------------------------
 
     //update del jugador, mira si mario choca con el suelo
     update(plataformas){
-        //game.debug.body(this._gameObject);
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -90,6 +103,10 @@ class Mario extends GameObject{
             this._anim.play("walk");
         }
     }
+    //----------------------------------------------------------------------
+
+    
+    //-----------------------------AUXILIARES-------------------------------
 
     //se llama cuando estas sobre una escalera, te permite subirla
     puedeSubir(){ 
@@ -107,10 +124,12 @@ class Mario extends GameObject{
      //permite atravesar muros si no has saltado antes y si estas subiendo
      atraviesa(){ if(this._subiendo)this._atraviesa = true; }
 
+     //llamado cuando se sueltan las teclas, anim de parado
      noCorras(){ 
          if(this._jump && !this._subiendo){
          this._corriendo=false; 
          this._anim.play("stop");
          }
     }
+    //-----------------------------------------------------------------------
 }

@@ -9,6 +9,8 @@ class GameObject{
         this._gameObject.body.gravity.y=400;
         this._gameObject.body.setSize(this._gameObject.width, this._gameObject.height/5);//collider, solo en sus pies
         this._gameObject.anchor.setTo(0.5, 1);//establecemos su centro en sus pies
+        this._gameObject.checkWorldBounds = true;//si se sale de los bordes de la pantalla muere
+        this._gameObject.events.onOutOfBounds.add(this.morir, this);
     }
 
     //cuando muere se destruye
@@ -20,4 +22,10 @@ class GameObject{
 
     //devuelven el gameObject
     get gameObject(){ return this._gameObject; }
+    
+    //devuelve si esta vivo
+    estaVivo(){ return this._gameObject.alive; }
+    
+    //lo spawnea en la posicion x, y
+    spawn(x, y){ this._gameObject.reset(x, y); }
 }
