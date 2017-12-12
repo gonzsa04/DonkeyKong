@@ -24,10 +24,10 @@ class Mario extends GameObject{
         //todas se guardaran en anim
         this._anim.add('stop', [0], null);//parado
         this._anim.add('walk', [1,0,2], 20, true);//andando
-        this._anim.add('saltar', [11], null);//salto
-        this._anim.add('escalera', [9,10], 6, true);//en una escalera
-        this._anim.add('escaleraStop', [9], null);//parado en una escalera
-        this._anim.add('morir', [16,17,18,19,20], 6, null);//muerto
+        this._anim.add('saltar', [5], null);//salto
+        this._anim.add('escalera', [3,4], 8, true);//en una escalera
+        this._anim.add('escaleraStop', [3], null);//parado en una escalera
+        this._anim.add('morir', [10,11,12,13,14], 4, null);//muerto
     }
     //--------------------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ class Mario extends GameObject{
 
     //hace subir o bajar a mario por una escalera, si puede
     escaleras(velEscalera){
-        if(this._sube){
+        if(this._sube && !this._muerto){
             this._subiendo=true;
             this._gameObject.body.velocity.y=velEscalera;
             this._inmovil=true;//no puede moverse en el eje x
@@ -137,7 +137,7 @@ class Mario extends GameObject{
     }
 
     //llamado cuando dejas de subir por una escalera
-    noEscales(){ if(this._sube && this._subiendo) this._anim.play("escaleraStop"); }
+    noEscales(){ if(this._sube && this._subiendo && !this._muerto) this._anim.play("escaleraStop"); }
 
     //llamado cuando te golpea un barril
     morirAnim(self){

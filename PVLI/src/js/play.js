@@ -17,7 +17,7 @@ var playScene={
         this.escalera7=this.escaleras.create(237, 245, 'escaleras');
         this.escalera8=this.escaleras.create(445, 175, 'escaleras');
         this.escalera9=this.escaleras.create(310, 80, 'escaleras');
-        this.escalera9.scale.setTo(1, 1.2);
+        this.escalera9.scale.setTo(1, 1.1);
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //MAPA
@@ -32,6 +32,8 @@ var playScene={
         //DECORADO
         game.add.image(30, 107, 'decoBarril');
         game.add.image(165, 40, 'decoEscaleras');
+        game.add.image(100, 200, 'decoMart');
+        game.add.image(400, 430, 'decoMart');
         this.oilDrum = game.add.sprite(50, 520, 'drumOil');
         this.oilDrum.animations.add('normal', [0,1], 2, true);
         this.oilDrum.animations.play('normal');
@@ -40,23 +42,24 @@ var playScene={
         //princesa a la que rescatar
         this.princesa=game.add.sprite(220, 40, 'princesa');
         this.princesa.animations.add('normal', [0,1,0,1,0,1,2,2,2], 6, true);
+        this.princesa.animations.add('ganar', [3,4], 1, false);
         this.princesa.animations.play('normal');
         game.physics.arcade.enable(this.princesa);
 
         //DK
         //villano
-        this.DK=game.add.sprite(70, 107, 'DK');
+        this.DK=game.add.sprite(70, 103, 'DK');
         this.DK.animations.add('normal', [0,1,2], 3, true);
+        this.DK.animations.add('barril', [3,4,5], 3, false);
         this.DK.animations.play('normal');
         game.physics.arcade.enable(this.DK);
 
        //BARRILES
        this.numBarriles = 10;//maximo de barriles que va a haber en pantalla
        this.frecuenciaBarriles = 5;//los barriles apareceran en un random entre 0 y esta variable
-       this.posBarx = 150; this.posBary = 170;//posicion inicial de los barriles
+       this.posBarx = 150; this.posBary = 175;//posicion inicial de los barriles
        this.barriles=[];//array de barriles, inicialmente todos inexistentes
-       this.barriles.push(new Barril(150, 155, 'barril'));//menos el primero
-       for(var i=1;i<this.numBarriles;i++){
+       for(var i=0;i<this.numBarriles;i++){
            this.barriles.push(new Barril(this.posBarx, this.posBary, 'barril'));
            this.barriles[i].morir();
        }
@@ -67,7 +70,7 @@ var playScene={
 
        //MARIO
        //por ultimo el jugador, para que se pinte por encima de todo
-       this.posInix = 200; this.posIniy = 560;//posicion inicial de mario
+       this.posInix = 150; this.posIniy = 560;//posicion inicial de mario
        this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim');
 
        this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
@@ -143,12 +146,20 @@ var playScene={
     GeneraBarriles: function(numRand){
         if(this.count == 0) this.rand = Math.random()*numRand;//generamos un random entre 0 y numRand
         if(this.count >= this.rand){//si el contador llega al random
-            var i = 0;
-            while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
-            if(i<this.barriles.length) this.barriles[i].spawn(this.posBarx, this.posBary);//lo spawneamos
-            this.count=0;//se reinicia el contador y se vuelve a hacer un random
-            this.rand = Math.random()*numRand;
+            this.DK.animations.play('barril');//animacion al soltar barril
+            this.DK.animations.currentAnim.onComplete.add(this.DKreset, this);//cuando termine
         }
+    },
+
+    DKreset: function (){
+        var i = 0;
+        while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
+        if(i<this.barriles.length) {
+            this.barriles[i].barrilSpawn(this.posBarx, this.posBary);//lo spawneamos
+            this.count=0;//se reinicia el contador y se vuelve a hacer un random
+            this.rand = Math.random()*this.frecuenciaBarriles;
+            this.DK.animations.play('normal');//reiniciamos la animacion
+         }
     },
 
     //suma cada segundo uno al contador, es el encargado de llamar a GeneraBarriles una vez por segundo
@@ -165,13 +176,18 @@ var playScene={
         else this.fin(false);//si no le quedan vidas pierde
     },
 
+    ganar: function(){game.state.start('ganar');},
+
     //metodo llamado cuando ganamos (true) o perdemos (false)
     fin: function(ganar){
         //eliminamos a mario y a los barriles
         this.mario.morir();
         for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
         //llamamos al menu de ganar o perder
-        if(ganar) game.state.start('ganar');
+        if(ganar){
+            this.princesa.animations.play('ganar');
+            this.princesa.animations.currentAnim.onComplete.add(this.ganar, this);//cuando termine
+        }
         else game.state.start('perder');
     }
     //-------------------------------------------------------------------------------------------------------------------------

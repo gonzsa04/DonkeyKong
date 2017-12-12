@@ -28,5 +28,8 @@ class GameObject{
     estaVivo(){ return this._gameObject.alive; }
     
     //lo spawnea en la posicion x, y
-    spawn(x, y){ this._gameObject.reset(x, y); }
+    spawn(x, y){ 
+        this._atraviesa = false;
+        this._gameObject.reset(x, y); 
+    }
 }

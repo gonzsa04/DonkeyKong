@@ -82,6 +82,17 @@ class Barril extends GameObject{
         }
     }
 
+    barrilSpawn(posX,posY){
+        this.spawn(posX,posY);
+        this._vel = Math.abs(this._vel)
+        this._gameObject.body.velocity.x = this._vel;
+        this._atraviesa = false;
+        this._baja=-1;
+        this._cambia = false;
+        this._rotaAnim = false;
+        this._escaleraAnim = false;
+    }
+
     //deja de atravesar muros
     noAtravieses(){ this._atraviesa = false; }
 
