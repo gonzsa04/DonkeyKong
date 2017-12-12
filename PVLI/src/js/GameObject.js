@@ -11,6 +11,7 @@ class GameObject{
         this._gameObject.anchor.setTo(0.5, 1);//establecemos su centro en sus pies
         this._gameObject.checkWorldBounds = true;//si se sale de los bordes de la pantalla muere
         this._gameObject.events.onOutOfBounds.add(this.morir, this);
+        this._anim = this._gameObject.animations;//animaciones
     }
 
     //cuando muere se destruye

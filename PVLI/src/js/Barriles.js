@@ -15,7 +15,7 @@ class Barril extends GameObject{
         this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*3/5);
 
         //ANIMACIONES
-        this._anim = this._gameObject.animations;//todas se guardaran en anim
+        //todas se guardaran en anim
         this._anim.add('rotate', [0,1,2,3], 8, true);//rotar
         this._anim.add('escalera', [4,5], 6, true);//bajar escaleras
         this._anim.play('rotate');
