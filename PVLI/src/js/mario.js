@@ -5,6 +5,7 @@ class Mario extends GameObject{
     //constructora de Mario
     constructor(x, y, nombre){
         super(x, y, nombre);//llama a constructora de GamObject
+        this._vidas=3;//vidas de mario
         this._jump=true;//indica si mario puede saltar
         this._limiteIzq = 70;//limites del mapa
         this._limiteDrcha = 530;
@@ -15,17 +16,18 @@ class Mario extends GameObject{
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
+        this._muerto=false;//indica si mario ha muerto
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/3, this._gameObject.height/5);
 
         //ANIMACIONES
-        this._anim = this._gameObject.animations;//todas se guardaran en anim
+        //todas se guardaran en anim
         this._anim.add('stop', [0], null);//parado
         this._anim.add('walk', [1,0,2], 20, true);//andando
         this._anim.add('saltar', [11], null);//salto
         this._anim.add('escalera', [9,10], 6, true);//en una escalera
         this._anim.add('escaleraStop', [9], null);//parado en una escalera
-        this._anim.add('morir', [16,17,18,19,20], null);//muerto
+        this._anim.add('morir', [16,17,18,19,20], 6, null);//muerto
     }
     //--------------------------------------------------------------------------------------
 
@@ -34,7 +36,7 @@ class Mario extends GameObject{
 
     //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
     mueveIzquierda(){
-        if(!this._inmovil && this._gameObject.x > this._limiteIzq){
+        if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
             this._gameObject.scale.setTo(-1, 1);//se de la vuelta
             if(!this._corriendo && this._jump){
                 this._corriendo=true;//si esta corriendo y no saltando
@@ -46,7 +48,7 @@ class Mario extends GameObject{
 
     //mueve a mario a la derecha a una velocidad si puede hacerlo y si no se sale del mapa
     mueveDerecha(){
-        if(!this._inmovil && this._gameObject.x < this._limiteDrcha){
+        if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto){
             this._gameObject.scale.setTo(1, 1);
             if(!this._corriendo && this._jump){
                 this._corriendo=true;
@@ -58,7 +60,7 @@ class Mario extends GameObject{
 
     //hace saltar a mario a una altura, si no ha saltado ya
     saltar(){
-        if(this._jump){
+        if(this._jump && !this._muerto){
             this._jump=false;
             this._anim.play("saltar");//anim de saltar
             this._gameObject.body.velocity.y=this._alturaSalto;
@@ -82,7 +84,6 @@ class Mario extends GameObject{
 
     //update del jugador, mira si mario choca con el suelo
     update(plataformas){
-        if(this._gameObject.body.velocity.y != 0)
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -102,7 +103,7 @@ class Mario extends GameObject{
             this._jump=true;//cuando toca el suelo puede volver a saltar
             this._inmovil=false;//puede moverse en el eje x otra vez
             this._subiendo=false;//ya no esta subiendo
-            this._anim.play("walk");
+            if(!this._muerto) this._anim.play("walk");
         }
     }
     //----------------------------------------------------------------------
@@ -129,15 +130,27 @@ class Mario extends GameObject{
 
      //llamado cuando se sueltan las teclas, anim de parado
      noCorras(){ 
-         if(this._jump && !this._subiendo){
+         if(this._jump && !this._subiendo && !this._muerto){
          this._corriendo=false; 
          this._anim.play("stop");
          }
     }
 
-    noEscales()
-    {
-        if(this._sube && this._subiendo) this._anim.play("escaleraStop");
+    //llamado cuando dejas de subir por una escalera
+    noEscales(){ if(this._sube && this._subiendo) this._anim.play("escaleraStop"); }
+
+    //llamado cuando te golpea un barril
+    morirAnim(self){
+        if(!this._muerto){
+        this._anim.play('morir');//mueres
+        this._muerto = true;
+        this._vidas--;//se restan vidas
+        this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
+        }
     }
+
+    get vidas(){ return this._vidas; }//devuelve el numero de vidas
+
+    noMuerto(){ this._muerto = false; }//"revive"  mario
     //-----------------------------------------------------------------------
 }
