@@ -17,7 +17,7 @@ var playScene={
         this.escalera7=this.escaleras.create(237, 245, 'escaleras');
         this.escalera8=this.escaleras.create(445, 175, 'escaleras');
         this.escalera9=this.escaleras.create(310, 80, 'escaleras');
-        this.escalera9.scale.setTo(1, 1.2);
+        this.escalera9.scale.setTo(1, 1.1);
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //MAPA
@@ -32,6 +32,8 @@ var playScene={
         //DECORADO
         game.add.image(30, 107, 'decoBarril');
         game.add.image(165, 40, 'decoEscaleras');
+        game.add.image(100, 200, 'decoMart');
+        game.add.image(400, 430, 'decoMart');
         this.oilDrum = game.add.sprite(50, 520, 'drumOil');
         this.oilDrum.animations.add('normal', [0,1], 2, true);
         this.oilDrum.animations.play('normal');
@@ -46,7 +48,7 @@ var playScene={
 
         //DK
         //villano
-        this.DK=game.add.sprite(70, 107, 'DK');
+        this.DK=game.add.sprite(70, 103, 'DK');
         this.DK.animations.add('normal', [0,1,2], 3, true);
         this.DK.animations.add('barril', [3,4,5], 3, false);
         this.DK.animations.play('normal');
@@ -55,7 +57,7 @@ var playScene={
        //BARRILES
        this.numBarriles = 10;//maximo de barriles que va a haber en pantalla
        this.frecuenciaBarriles = 5;//los barriles apareceran en un random entre 0 y esta variable
-       this.posBarx = 150; this.posBary = 166;//posicion inicial de los barriles
+       this.posBarx = 150; this.posBary = 175;//posicion inicial de los barriles
        this.barriles=[];//array de barriles, inicialmente todos inexistentes
        for(var i=0;i<this.numBarriles;i++){
            this.barriles.push(new Barril(this.posBarx, this.posBary, 'barril'));
@@ -153,7 +155,7 @@ var playScene={
         var i = 0;
         while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
         if(i<this.barriles.length) {
-            this.barriles[i].spawn(this.posBarx, this.posBary);//lo spawneamos
+            this.barriles[i].barrilSpawn(this.posBarx, this.posBary);//lo spawneamos
             this.count=0;//se reinicia el contador y se vuelve a hacer un random
             this.rand = Math.random()*this.frecuenciaBarriles;
             this.DK.animations.play('normal');//reiniciamos la animacion
