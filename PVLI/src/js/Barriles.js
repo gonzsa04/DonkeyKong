@@ -1,7 +1,7 @@
 //clase de los barriles, hereda de GameObject
 class Barril extends GameObject{
 
-    //-----------------------------------CONSTRUCTORA--------------------------------------------
+    //-----------------------------------CONSTRUCTORA---------------------------------------------
     //constructora de los barriles
     constructor(x, y, nombre){
         super(x, y, nombre);//llama a constructora de GameObject
