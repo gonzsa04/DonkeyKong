@@ -27,7 +27,7 @@ class Mario extends GameObject{
         this._anim.add('saltar', [11], null);//salto
         this._anim.add('escalera', [9,10], 6, true);//en una escalera
         this._anim.add('escaleraStop', [9], null);//parado en una escalera
-        this._anim.add('morir', [16,17,18,19,20], 6, null);//muerto
+        this._anim.add('morir', [16,17,18,19,20], 4, null);//muerto
     }
     //--------------------------------------------------------------------------------------
 
