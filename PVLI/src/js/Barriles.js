@@ -82,6 +82,7 @@ class Barril extends GameObject{
         }
     }
 
+    //al spawnearlo reinciamos todos sus atributos para evitar bugs
     barrilSpawn(posX,posY){
         this.spawn(posX,posY);
         this._vel = Math.abs(this._vel)

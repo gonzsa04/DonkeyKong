@@ -36,9 +36,9 @@ class Mario extends GameObject{
 
     //mueve a mario a la izquierda a una velocidad si puede hacerlo y si no se sale del mapa
     mueveIzquierda(){
-        if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
+        if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto && this._jump){
             this._gameObject.scale.setTo(-1, 1);//se de la vuelta
-            if(!this._corriendo && this._jump){
+            if(!this._corriendo){
                 this._corriendo=true;//si esta corriendo y no saltando
                 this._anim.play('walk');
             }
@@ -48,9 +48,9 @@ class Mario extends GameObject{
 
     //mueve a mario a la derecha a una velocidad si puede hacerlo y si no se sale del mapa
     mueveDerecha(){
-        if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto){
+        if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto && this._jump){
             this._gameObject.scale.setTo(1, 1);
-            if(!this._corriendo && this._jump){
+            if(!this._corriendo){
                 this._corriendo=true;
                 this._anim.play('walk');
             }
@@ -94,6 +94,12 @@ class Mario extends GameObject{
         else {
             this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad
             this._gameObject.body.velocity.y=0;//como velocidad se reinician
+        }
+        //si ha saltado y se estaba moviendo en una direccion, salta en esa direccion
+        if(this._corriendo && !this._jump && !this._subiendo &&
+            this._gameObject.x < this._limiteDrcha && this._gameObject.x > this._limiteIzq) {
+            if(this._gameObject.scale.x == 1) this._gameObject.body.velocity.x=this._vel;
+            else this._gameObject.body.velocity.x=-this._vel
         }
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
