@@ -9,6 +9,9 @@ class Mario extends GameObject{
         this._jump=true;//indica si mario puede saltar
         this._limiteIzq = 70;//limites del mapa
         this._limiteDrcha = 530;
+        this._yProv = this.y;//variable donde guardamos la altura provisional
+        this._alturaCaida = 55;//altura maxima desde la que caer   
+        this._volando = false;//indica si esta en el aire o no
         this._sube=false;//indica si mario puede subir escaleras
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
@@ -83,7 +86,7 @@ class Mario extends GameObject{
     //--------------------------------UPDATE---------------------------------------
 
     //update del jugador, mira si mario choca con el suelo
-    update(plataformas){
+    update(plataformas, self){
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -92,6 +95,7 @@ class Mario extends GameObject{
         if(!this._subiendo)this._gameObject.body.gravity.y=400;//lo mismo con su gravedad 
         //(si no esta subiendo una escalera)
         else {
+            this._corriendo = false;
             this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad
             this._gameObject.body.velocity.y=0;//como velocidad se reinician
         }
@@ -104,12 +108,20 @@ class Mario extends GameObject{
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
+            console.log( this.y - this._yProv);
+            if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
+            this._yProv = this.y;
             if(this._gameObject.body.onWall())this._vel = this._velMax;
             else this._vel = this._velMin;//si no, vuelve a su velocidad normal
             this._jump=true;//cuando toca el suelo puede volver a saltar
             this._inmovil=false;//puede moverse en el eje x otra vez
             this._subiendo=false;//ya no esta subiendo
+            this.volando = false;
             if(!this._muerto) this._anim.play("walk");
+        }
+        else if(!this._volando){
+        this.yProv = this._gameObject.y;
+        this._volando = true;
         }
     }
     //----------------------------------------------------------------------
@@ -121,6 +133,7 @@ class Mario extends GameObject{
     puedeSubir(){ 
         if (this._jump){//si no has saltado
         this._sube=true;    
+        this._corriendo = false;
         }
      }
 

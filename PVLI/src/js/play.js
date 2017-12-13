@@ -70,7 +70,7 @@ var playScene={
 
        //MARIO
        //por ultimo el jugador, para que se pinte por encima de todo
-       this.posInix = 150; this.posIniy = 560;//posicion inicial de mario
+       this.posInix = 150; this.posIniy = 565;//posicion inicial de mario
        this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim');
 
        this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
@@ -80,7 +80,7 @@ var playScene={
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
         //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de mario (debug)
-        this.mario.update(this.layer);//llamamos al update de mario
+        this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
