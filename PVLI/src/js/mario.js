@@ -9,7 +9,7 @@ class Mario extends GameObject{
         this._jump=true;//indica si mario puede saltar
         this._limiteIzq = 70;//limites del mapa
         this._limiteDrcha = 530;
-        this._yProv = 700;//variable donde guardamos la altura provisional
+        this._yProv = 600;//variable donde guardamos la altura provisional
         this._alturaCaida = 50;//altura maxima desde la que caer   
         this._volando = false;//indica si esta en el aire o no
         this._sube=false;//indica si mario puede subir escaleras
@@ -74,6 +74,7 @@ class Mario extends GameObject{
     escaleras(velEscalera){
         if(this._sube && !this._muerto){
             this._subiendo=true;
+            this._yProv = this.y;
             this._gameObject.body.velocity.y=velEscalera;
             this._inmovil=true;//no puede moverse en el eje x
             this._jump=false;//no puede saltar
@@ -109,7 +110,8 @@ class Mario extends GameObject{
         if(this._gameObject.body.onFloor()){
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
             if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
-            else if (!this._muerto)this._yProv = this.y;
+            if (!this._muerto)this._yProv = this.y;
+            else this._yProv = 600;
             if(this._gameObject.body.onWall())this._vel = this._velMax;
             else this._vel = this._velMin;//si no, vuelve a su velocidad normal
             this._jump=true;//cuando toca el suelo puede volver a saltar
@@ -160,7 +162,6 @@ class Mario extends GameObject{
     //llamado cuando te golpea un barril
     morirAnim(self){
         if(!this._muerto){
-        this._yProv = 700;
         this._anim.play('morir');//mueres
         this._muerto = true;
         this._vidas--;//se restan vidas
