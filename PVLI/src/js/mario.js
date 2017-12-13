@@ -103,8 +103,8 @@ class Mario extends GameObject{
         //si ha saltado y se estaba moviendo en una direccion, salta en esa direccion
         if(this._corriendo && !this._jump && !this._subiendo &&
             this._gameObject.x < this._limiteDrcha && this._gameObject.x > this._limiteIzq) {
-            if(this._gameObject.scale.x == 1) this._gameObject.body.velocity.x=this._vel;
-            else this._gameObject.body.velocity.x=-this._vel
+            if(this._gameObject.scale.x == 1) this._gameObject.body.velocity.x=this._velMin;
+            else this._gameObject.body.velocity.x=-this._velMin;
         }
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
