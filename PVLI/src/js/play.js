@@ -1,7 +1,8 @@
 //estado play
 var playScene={
     create: function(){
-        this.cursors=game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
+        this.cursors = game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
+        this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
 
         //ESCALERAS
         //metemos todas las escaleras en un mismo grupo,
@@ -72,8 +73,6 @@ var playScene={
        //por ultimo el jugador, para que se pinte por encima de todo
        this.posInix = 150; this.posIniy = 565;//posicion inicial de mario
        this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim');
-
-       this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
     },
 
 
