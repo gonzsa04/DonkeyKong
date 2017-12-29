@@ -19,6 +19,18 @@ var playScene={
         this.escalera8=this.escaleras.create(445, 175, 'escaleras');
         this.escalera9=this.escaleras.create(310, 80, 'escaleras');
         this.escalera9.scale.setTo(1, 1.1);
+        this.escalera10=this.escaleras.create(273, 585, 'escalerasRotas');
+        this.escalera10.anchor.setTo(0,1);
+        this.escalera10.body.setSize(this.escalera10.width, this.escalera10.body.height/2);
+        this.escalera11=this.escaleras.create(290, 425, 'escalerasRotas');
+        this.escalera11.anchor.setTo(0,1);
+        this.escalera11.body.setSize(this.escalera11.width, this.escalera11.body.height/2);
+        this.escalera12=this.escaleras.create(410, 340, 'escalerasRotas');
+        this.escalera12.anchor.setTo(0,1);
+        this.escalera12.body.setSize(this.escalera12.width, this.escalera12.body.height/2);
+        this.escalera13=this.escaleras.create(277, 266, 'escalerasRotas');
+        this.escalera13.anchor.setTo(0,1);
+        this.escalera13.body.setSize(this.escalera13.width, this.escalera13.body.height);
         this.escaleras.setAll('body.inmovable', true);//las hacemos inmovibles
 
         //MAPA
@@ -78,7 +90,7 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de mario (debug)
+        //game.debug.body(this.escalera13);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         this.teclas();//llamamos al gestor del input
@@ -128,7 +140,7 @@ var playScene={
         if(barril.x >= escaleras.x + escaleras.width*2/5 && barril.x <= escaleras.x + escaleras.width*4/5){
             var i = 0;
             while(i<this.barriles.length && this.barriles[i].gameObject != barril)i++;
-            if(barril.y < escaleras.y + escaleras.height*3/4) this.barriles[i].bajaOno();
+            if(barril.y < (escaleras.y-escaleras.anchor.y*escaleras.height) + escaleras.height*3/4) this.barriles[i].bajaOno();
             else this.barriles[i].noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
         }
     },

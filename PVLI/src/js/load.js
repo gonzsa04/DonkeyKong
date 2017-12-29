@@ -5,11 +5,12 @@ var loadScene={
 		//informamos de que esta cargando
 		var loading=game.add.text(180, 250, 'Loading...', {font: '40px Courier', fill: '#FFF'})
 		game.load.image('titulo', 'images/Titulo.png');//sprite del titulo
-		game.load.spritesheet('start', 'images/start.png', 75, 21, 2);//sprites de botones
-		game.load.spritesheet('exit', 'images/exit.png', 63, 21, 2);
+		game.load.spritesheet('start', 'images/start.png', 76, 21, 2);//sprites de botones
+		game.load.spritesheet('exit', 'images/exit.png', 64, 21, 2);
 		game.load.image('howHigh', 'images/howhigh.png');//how high can you get?
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
+		game.load.image('escalerasRotas', 'images/escalerasRotas.png');//sprite de las escaleras
 		game.load.image('hud', 'images/hud.png');//hud del juego
 		game.load.image('decoMart', 'images/martDecor.png');
 		game.load.image('decoBarril', 'images/BarrilDecor.png');
