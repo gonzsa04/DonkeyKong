@@ -7,5 +7,6 @@ game.state.add('menu', menuScene);
 game.state.add('play', playScene);
 game.state.add('ganar', ganarScene);
 game.state.add('perder', perderScene);
+game.state.add('howHigh', howHighScene);
 
 game.state.start('boot');//iniciamos el estado boot

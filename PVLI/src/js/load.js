@@ -7,6 +7,7 @@ var loadScene={
 		game.load.image('titulo', 'images/Titulo.png');//sprite del titulo
 		game.load.spritesheet('start', 'images/start.png', 75, 21, 2);//sprites de botones
 		game.load.spritesheet('exit', 'images/exit.png', 63, 21, 2);
+		game.load.image('howHigh', 'images/howhigh.png');//how high can you get?
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
 		game.load.image('hud', 'images/hud.png');//hud del juego

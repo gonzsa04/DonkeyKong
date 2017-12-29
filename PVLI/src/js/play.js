@@ -170,8 +170,7 @@ var playScene={
         if(this.mario.vidas > 0){//si aun le quedan vidas spawneamos todo de nuevo
             for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
             this.mario.morir();
-            this.mario.spawn(this.posInix, this.posIniy);
-            this.mario.noMuerto();//revivimos a mario
+            game.state.start('howHigh');
         }
         else this.fin(false);//si no le quedan vidas pierde
     },

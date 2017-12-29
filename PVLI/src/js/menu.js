@@ -31,6 +31,6 @@ var menuScene={
     },
 
     play: function(){//llamada al pulsar espacio
-        game.state.start('play');//se inicia el estado 'play'
+        game.state.start('howHigh');//se inicia el estado 'howHigh'
     }
 };
