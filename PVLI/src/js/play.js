@@ -22,7 +22,7 @@ var playScene={
         this.escalera10=this.escaleras.create(273, 585, 'escalerasRotas');
         this.escalera10.anchor.setTo(0,1);
         this.escalera10.body.setSize(this.escalera10.width, this.escalera10.body.height/2);
-        this.escalera11=this.escaleras.create(290, 425, 'escalerasRotas');
+        this.escalera11=this.escaleras.create(270, 425, 'escalerasRotas');
         this.escalera11.anchor.setTo(0,1);
         this.escalera11.body.setSize(this.escalera11.width, this.escalera11.body.height/2);
         this.escalera12=this.escaleras.create(410, 340, 'escalerasRotas');
