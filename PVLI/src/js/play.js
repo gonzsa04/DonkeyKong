@@ -81,6 +81,9 @@ var playScene={
        this.GeneraBarriles(this.frecuenciaBarriles);//genera los barriles aleatoriamente
        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
 
+       //FLAMAS
+       this.Flama = new Flama(150, 565, 'Flama');
+
        //MARIO
        //por ultimo el jugador, para que se pinte por encima de todo
        this.posInix = 150; this.posIniy = 565;//posicion inicial de mario
@@ -93,6 +96,7 @@ var playScene={
         //game.debug.body(this.escalera13);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
+        this.Flama.update(this.layer, this);
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
     },

@@ -2,7 +2,9 @@
 var controlsScene = {
     create: function(){
         //titulo del juego
-        this.title = game.add.sprite(0, 100, 'titulo');
+        this.title = game.add.sprite(0, 50, 'titulo');
+        this.title.animations.add('title', [0,1], 4, true);
+        this.title.animations.play('title');
         this.title.x = game.width/2 - this.title.width/2;
         this.texto = game.add.text(0, 550, 'Press space to return to the menu', {font: '25px Arial', fill: '#FFF'});
         this.texto.x = game.width/2 - this.texto.width/2;

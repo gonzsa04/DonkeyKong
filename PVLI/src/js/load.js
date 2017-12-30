@@ -4,7 +4,7 @@ var loadScene={
 	preload:function(){
 		//informamos de que esta cargando
 		var loading=game.add.text(180, 250, 'Loading...', {font: '40px Courier', fill: '#FFF'})
-		game.load.image('titulo', 'images/Titulo.png');//sprite del titulo
+		game.load.spritesheet('titulo', 'images/Titulo.png', 450, 240, 2);//sprite del titulo
 		game.load.spritesheet('start', 'images/start.png', 76, 21, 2);//sprites de botones
 		game.load.spritesheet('controls', 'images/controles.png', 120, 21, 2);
 		game.load.image('menuControles', 'images/controls.png');//sprites del menu de controles
@@ -21,7 +21,8 @@ var loadScene={
 		game.load.spritesheet('DK', 'images/DKAnim.png', 96, 72, 14)
 		game.load.spritesheet('drumOil', 'images/oilDrum.png', 30, 57, 2);
 		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 6);//barril
-		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 36, 32, 15);//mario
+		game.load.spritesheet('Flama', 'images/llamaAnim.png', 32, 32, 4);//Flama
+		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 38, 32, 15);//mario
 		game.load.spritesheet('animMart', 'images/animMart.png', 66, 52, 6);//animaciones del martillo
 	},
 	//create es como Start en Unity
