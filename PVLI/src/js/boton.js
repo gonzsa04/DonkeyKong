@@ -20,4 +20,8 @@ class Button{
      }
      //dice si un boton esta activo o no
     activado(){ return this._activado; }
+    //devuelve la posicion x del boton (para posicionar el simbolo de mario del menu)
+    get x(){ return this._gameObject.x; }
+    //devuelve la posicion y del boton (para posicionar el simbolo de mario del menu)
+    get y(){ return this._gameObject.y; }
 }

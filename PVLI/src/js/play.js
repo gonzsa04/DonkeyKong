@@ -125,10 +125,11 @@ var playScene={
 
         //para cada uno de los barriles
         for(var i = 0; i < this.barriles.length; i++){
-        //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
-        if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
-        //si mario choca con algun barril muere y pierde una vida
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)) this.mario.morirAnim(this);
+            //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
+            if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
+            //si mario choca con algun barril muere y pierde una vida
+            if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject))
+                this.mario.morirAnim(this);
         }
     },
     //-----------------------------------------------------------------------------------------------------------------------
@@ -179,7 +180,7 @@ var playScene={
 
     //llamado desde mario cuando este pierde una vida
     ResetLevel(){
-        if(this.mario.vidas > 0){//si aun le quedan vidas spawneamos todo de nuevo
+        if(game.vidas > 0){//si aun le quedan vidas spawneamos todo de nuevo
             for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
             this.mario.morir();
             game.state.start('howHigh');
@@ -195,6 +196,7 @@ var playScene={
         //eliminamos a mario y a los barriles
         this.mario.morir();
         for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
+        game.vidas = 3;//reestablecemos las vidas
         //llamamos al menu de ganar o perder
         if(ganar){
             this.princesa.animations.play('ganar');

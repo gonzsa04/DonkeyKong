@@ -6,7 +6,8 @@ var loadScene={
 		var loading=game.add.text(180, 250, 'Loading...', {font: '40px Courier', fill: '#FFF'})
 		game.load.image('titulo', 'images/Titulo.png');//sprite del titulo
 		game.load.spritesheet('start', 'images/start.png', 76, 21, 2);//sprites de botones
-		game.load.spritesheet('exit', 'images/exit.png', 64, 21, 2);
+		game.load.spritesheet('controls', 'images/controles.png', 120, 21, 2);
+		game.load.image('menuControles', 'images/controls.png');//sprites del menu de controles
 		game.load.image('howHigh', 'images/howhigh.png');//how high can you get?
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
@@ -21,6 +22,7 @@ var loadScene={
 		game.load.spritesheet('drumOil', 'images/oilDrum.png', 30, 57, 2);
 		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 6);//barril
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 36, 32, 15);//mario
+		game.load.spritesheet('animMart', 'images/animMart.png', 66, 52, 6);//animaciones del martillo
 	},
 	//create es como Start en Unity
 	create:function(){
