@@ -155,7 +155,7 @@ var playScene={
     PuedeSubir: function(mario, escaleras){
         if(mario.x < escaleras.x + escaleras.width*4/5 && mario.x > escaleras.x)this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
-        if(mario.y < escaleras.y + escaleras.height*3/4) this.mario.atraviesa();
+        if(mario.y < (escaleras.y-escaleras.anchor.y*escaleras.height) + escaleras.height*3/4) this.mario.atraviesa();
     },
 
     //genera barriles de forma aleatoria
