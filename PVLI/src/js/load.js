@@ -24,6 +24,8 @@ var loadScene={
 		game.load.spritesheet('Flama', 'images/llamaAnim.png', 32, 32, 4);//Flama
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 38, 32, 15);//mario
 		game.load.spritesheet('animMart', 'images/animMart.png', 66, 52, 6);//animaciones del martillo
+		game.load.image('youWin', 'images/youWin.png');//has ganado
+		game.load.image('gameOver', 'images/gameOver.png');//has perdido
 	},
 	//create es como Start en Unity
 	create:function(){

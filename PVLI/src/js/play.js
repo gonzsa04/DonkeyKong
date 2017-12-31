@@ -45,8 +45,6 @@ var playScene={
         //DECORADO
         game.add.image(30, 107, 'decoBarril');
         game.add.image(165, 40, 'decoEscaleras');
-        game.add.image(100, 200, 'decoMart');
-        game.add.image(400, 430, 'decoMart');
         this.oilDrum = game.add.sprite(50, 520, 'drumOil');
         this.oilDrum.animations.add('normal', [0,1], 2, true);
         this.oilDrum.animations.play('normal');
@@ -84,6 +82,12 @@ var playScene={
        //FLAMAS
        this.Flama = new Flama(150, 565, 'Flama');
 
+       //MARTILLOS
+       this.martillos = game.add.physicsGroup();
+        this.martillo1 = this.martillos.create(100, 210, 'decoMart');
+        this.martillo2 = this.martillos.create(400, 450, 'decoMart');
+
+
        //MARIO
        //por ultimo el jugador, para que se pinte por encima de todo
        this.posInix = 150; this.posIniy = 565;//posicion inicial de mario
@@ -93,7 +97,7 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.escalera13);//vemos en pantalla el collider de x gameobject (debug)
+        //game.debug.body(this.martillo1);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         this.Flama.update(this.layer, this);
@@ -126,6 +130,8 @@ var playScene={
         if(!game.physics.arcade.overlap(this.mario.gameObject, this.escaleras, this.PuedeSubir, null, this))this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
+        //si mario colisiona con un martillo lo coge
+        game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this);
 
         //para cada uno de los barriles
         for(var i = 0; i < this.barriles.length; i++){
@@ -156,6 +162,10 @@ var playScene={
         if(mario.x < escaleras.x + escaleras.width*4/5 && mario.x > escaleras.x)this.mario.puedeSubir();
         else this.mario.noPuedeSubir();
         if(mario.y < (escaleras.y-escaleras.anchor.y*escaleras.height) + escaleras.height*3/4) this.mario.atraviesa();
+    },
+
+    recogeMartillo: function(mario, martillos){
+        martillos.kill();
     },
 
     //genera barriles de forma aleatoria
