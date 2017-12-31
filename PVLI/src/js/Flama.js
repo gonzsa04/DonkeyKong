@@ -3,11 +3,13 @@ class Flama extends GameObject{
     
         //--------------------------------------CONSTRUCTORA-------------------------------------
         //constructora de la Flama
-        constructor(x, y, nombre){
+        constructor(x, y, nombre, limitizq, limitdrch, Rango){
             super(x, y, nombre);//llama a constructora de GamObject
-            this._limiteIzq = 70;//limites del mapa
-            this._limiteDrcha = 530; 
-            this._sube=false;//indica si la Flama puede subir escaleras
+            this._limiteIzq = limitizq;//limites del mapa
+            this._limiteDrcha = limitdrch; 
+            this._persigue = -1;
+            this._rango = Rango;
+            this._sube=true;//indica si la Flama puede subir escaleras
             this._subiendo=false;//indica si la Flama esta subiendo escaleras
             this._inmovil=false;//indica si la Flama puede moverse en el eje x
             this._velMax = 125;//velocidad a la que sube las rampas
@@ -30,52 +32,78 @@ class Flama extends GameObject{
         mueveIzquierda(){
            
             if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
-                this._gameObject.scale.setTo(-1, 1);//se de la vuelta
                 this._gameObject.body.velocity.x=-this._vel;
             }
         }
 
         mueveDerecha(){
             if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto){
-                this._gameObject.scale.setTo(1, 1);
                 this._gameObject.body.velocity.x=this._vel;
             }
         }
-    
-        //hace subir o bajar a la Flama por una escalera, si puede
-        escaleras(velEscalera){
-            if(this._sube && !this._muerto){
-                this._subiendo=true;
-                this._gameObject.body.velocity.y=velEscalera;
-                this._inmovil=true;//no puede moverse en el eje x
+
+        FueraDeRango(mario){
+            this._persigue = Math.floor(Math.random()*5);
+            if(this._persigue >= 1){
+                if(mario.x > this._gameObject.x)this.mueveDerecha();
+                else this.mueveIzquierda();
+            }
+            else{
+                if(mario.x > this._gameObject.x)this.mueveIzquierda();
+                else this.mueveDerecha();
             }
         }
+
+        DentroDeRango(mario){
+            if(mario.x > this._gameObject.x)this.mueveDerecha();
+            else this.mueveIzquierda();
+        }
+    
+        //hace subir o bajar a la Flama por una escalera, si puede
+        escaleras(escalera){
+            if(!this._muerto && !this._sube && this._gameObject.x < escalera.x + escalera.width*3/5 && this._gameObject.x > escalera.x + escalera.width*2/5){
+                this._persigue = 1/*Math.floor(Math.random()*2);*/
+                if (this._persigue == 1){
+                    this._sube = true;
+                    this._atraviesa = true;
+                    if(!this._subiendo){
+                        this._subiendo = true;
+                        if(this._gameObject.y < escalera.y-escalera.anchor.y*escalera.height)this._gameObject.body.velocity.y = this._velMin;
+                        else this._gameObject.body.velocity.y = -this._velMin;
+                    }
+                }
+                else{
+                    this._sube = true; 
+                }
+            }
+        }
+
+        
         //-----------------------------------------------------------------------------
     
     
         //--------------------------------UPDATE---------------------------------------
     
         //update del jugador, mira si la Flama choca con el suelo
-        update(plataformas, self){
+        update(plataformas, self, mario){
             //la Flama colisiona con las plataformas si no puede atravesarlas
             if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
-            this._atraviesa = false;//reiniciamos atraviesa
             this._gameObject.body.velocity.x=0;//reiniciamos su velocidad
-            this.mueveDerecha();
+            if(!this._subiendo){
+            if(game.physics.arcade.distanceToXY(this._gameObject, mario.x, mario.y) <= this._rango)this.DentroDeRango(mario);
+            else this.FueraDeRango(mario);
+            this._gameObject.body.gravity.y=400;
+            this._gameObject.body.velocity.y=0;
+            }
             // por si se hubiera dejado de pulsar las teclas
-            if(!this._subiendo)this._gameObject.body.gravity.y=400;//lo mismo con su gravedad 
             //(si no esta subiendo una escalera)
             else {
-                this._corriendo = false;
                 this._gameObject.body.gravity.y=0;//si esta subiendo tanto gravedad
-                this._gameObject.body.velocity.y=0;//como velocidad se reinician
             }
             //si toca el suelo
             if(this._gameObject.body.onFloor()){
                 if(this._gameObject.body.onWall())this._vel = this._velMax;
                 else this._vel = this._velMin;//si no, vuelve a su velocidad normal
-                this._inmovil=false;//puede moverse en el eje x otra vez
-                this._subiendo=false;//ya no esta subiendo
             }
         }
         //----------------------------------------------------------------------
@@ -83,20 +111,14 @@ class Flama extends GameObject{
         
         //-----------------------------AUXILIARES-------------------------------
     
-        //se llama cuando estas sobre una escalera, te permite subirla
-        puedeSubir(){
-            this._sube=true;    
-         }
-    
         //se llama cuando sales de una escalera, ya no puedes subirla
         noPuedeSubir(){ 
             this._sube=false;
-            this._subiendo=false;
-            this._inmovil=false;
+            this._atraviesa = false;
          }
     
          //permite atravesar muros si no has saltado antes y si estas subiendo
-         atraviesa(){ if(this._subiendo)this._atraviesa = true; }
+        atraviesa(){ if(this._subiendo)this._atraviesa = true; }
     
         //llamado cuando te golpea un barril
         morirAnim(self){

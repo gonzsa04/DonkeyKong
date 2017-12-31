@@ -23,8 +23,8 @@ var menuScene={
         this.DK.animations.add('normal', [0,1,2], 3, true);
         this.oilDrum2 = this.decorado.create(0, 0, 'drumOil');
         this.oilDrum2.animations.add('normal', [0,1], 2, true);
-        this.mario = this.decorado.create(0, 0, 'animMart');
-        this.mario.animations.add('normal', [1], 1, false);
+        this.mario = this.decorado.create(0, 0, 'marioAnim');
+        this.mario.animations.add('normal', [18], 1, false);
 
         for(i = 0; i < this.decorado.length; i++){
             this.decorado.children[i].x = game.width/4 + i*game.width/4 - this.decorado.children[i].width/2;

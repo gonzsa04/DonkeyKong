@@ -80,7 +80,7 @@ var playScene={
        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
 
        //FLAMAS
-       this.Flama = new Flama(150, 565, 'Flama');
+       this.Flama = new Flama(150, 565, 'Flama', 70, 530, 100);
 
        //MARTILLOS
        this.martillos = game.add.physicsGroup();
@@ -90,17 +90,17 @@ var playScene={
 
        //MARIO
        //por ultimo el jugador, para que se pinte por encima de todo
-       this.posInix = 150; this.posIniy = 565;//posicion inicial de mario
+       this.posInix = 150; this.posIniy = 555;//posicion inicial de mario
        this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim');
     },
 
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.martillo1);//vemos en pantalla el collider de x gameobject (debug)
+        game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
-        this.Flama.update(this.layer, this);
+        this.Flama.update(this.layer, this, this.mario,);
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
     },
@@ -133,6 +133,8 @@ var playScene={
         //si mario colisiona con un martillo lo coge
         game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this);
 
+        if(!game.physics.arcade.overlap(this.Flama.gameObject, this.escaleras, this.PSF, null, this))this.Flama.noPuedeSubir();
+
         //para cada uno de los barriles
         for(var i = 0; i < this.barriles.length; i++){
             //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
@@ -144,6 +146,9 @@ var playScene={
     },
     //-----------------------------------------------------------------------------------------------------------------------
 
+    PSF(flama, escalera){
+        this.Flama.escaleras(escalera);
+    },
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
     //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)

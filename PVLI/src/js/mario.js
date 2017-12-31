@@ -20,7 +20,7 @@ class Mario extends GameObject{
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._muerto=false;//indica si mario ha muerto
         //redimensionamos su collider
-        this._gameObject.body.setSize(this._gameObject.width*2/3, this._gameObject.height/5);
+        this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
         //ANIMACIONES
         //todas se guardaran en anim
