@@ -5,7 +5,6 @@ class Mario extends GameObject{
     //constructora de Mario
     constructor(x, y, nombre){
         super(x, y, nombre);//llama a constructora de GamObject
-        this._vidas=3;//vidas de mario
         this._jump=true;//indica si mario puede saltar
         this._limiteIzq = 70;//limites del mapa
         this._limiteDrcha = 530;
@@ -21,7 +20,7 @@ class Mario extends GameObject{
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._muerto=false;//indica si mario ha muerto
         //redimensionamos su collider
-        this._gameObject.body.setSize(this._gameObject.width*2/3, this._gameObject.height/5);
+        this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
         //ANIMACIONES
         //todas se guardaran en anim
@@ -162,14 +161,12 @@ class Mario extends GameObject{
     //llamado cuando te golpea un barril
     morirAnim(self){
         if(!this._muerto){
-        this._anim.play('morir');//mueres
-        this._muerto = true;
-        this._vidas--;//se restan vidas
-        this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
+            game.vidas--;
+            this._anim.play('morir');//mueres
+            this._muerto = true;
+            this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
         }
     }
-
-    get vidas(){ return this._vidas; }//devuelve el numero de vidas
 
     noMuerto(){ this._muerto = false; }//"revive"  mario
     //-----------------------------------------------------------------------

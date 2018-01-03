@@ -1,8 +1,11 @@
 //estado ganar
 var ganarScene={
     create:function(){
-        var ganar=game.add.text(100, 250, 'HAS GANADO!', {font: '50px Arial', fill: '#FFF'});
-        var begin=game.add.text(100, 550, 'Presiona espacio para volver al menú', {font: '25px Arial', fill: '#FFF'});
+        var youWin = game.add.sprite(100, 250, 'youWin');
+        youWin.x = game.width/2 - youWin.width/2;
+        youWin.y = game.height/2 - youWin.height/2;
+        var begin=game.add.text(0, 550, 'Press space to continue', {font: '25px Arial', fill: '#FFF'});
+        begin.x = game.width/2 - begin.width/2;
         var space=game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         space.onDown.addOnce(this.menu, this);
     },
