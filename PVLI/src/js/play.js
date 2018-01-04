@@ -152,7 +152,7 @@ var playScene={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo())this.flamas[i].morir();//si lleva martillo la mata
+                if(this.mario.llevaMartillo())this.flamas[i].aplastado();//si lleva martillo la mata
                 else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }

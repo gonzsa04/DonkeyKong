@@ -10,7 +10,7 @@ var controlsScene = {
         this.texto.x = game.width/2 - this.texto.width/2;
 
         //se muestran los controles
-        this.controls = game.add.sprite(0, 300, 'menuControles');
+        this.controls = game.add.sprite(0, 350, 'menuControles');
         this.controls.x = game.width/2 - this.controls.width/2;
 
         //decoracion
@@ -25,7 +25,7 @@ var controlsScene = {
         for(i = 0; i<this.decorado.length; i++){
             this.decorado.children[i].scale.setTo(1.5, 1.5);
             this.decorado.children[i].x = this.controls.x - this.decorado.children[i].width;
-            this.decorado.children[i].y = this.controls.y + i*game.height/9;
+            this.decorado.children[i].y = this.controls.y*10/11 + i*game.height/9;
             this.decorado.children[i].animations.play('normal');
         }
 

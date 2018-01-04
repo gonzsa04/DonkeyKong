@@ -22,6 +22,8 @@ class Flama extends GameObject{
             //ANIMACIONES
             //todas se guardaran en anim
             this._anim.add('normal', [0,1], 6, true);//parado
+            this._anim.add('martillo', [2,3], 6, true);
+            this._anim.add('aplastado', [4,5,6,7], 8, false);
             this._anim.play('normal');
             game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
         }
@@ -98,6 +100,7 @@ class Flama extends GameObject{
     
         //update de la Flama, mira si la Flama choca con el suelo
         update(plataformas, self, mario){
+            if(!this._muerto){
             //la Flama colisiona con las plataformas si no puede atravesarlas
             if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
             if(!this._subiendo){
@@ -105,6 +108,7 @@ class Flama extends GameObject{
                 else this.FueraDeRango(mario);
                 this._gameObject.body.velocity.y=0;
             }
+            
             //(si no esta subiendo una escalera)
             else {
                 this._gameObject.body.velocity.x = 0;
@@ -119,6 +123,9 @@ class Flama extends GameObject{
                 if(this._gameObject.body.onWall())this._vel = this._velMax;
                 else this._vel = this._velMin;//si no, vuelve a su velocidad normal
             }
+            if (mario.llevaMartillo())this._anim.play('martillo');
+            else this._anim.play('normal');
+        }
         }
         //----------------------------------------------------------------------
     
@@ -126,14 +133,17 @@ class Flama extends GameObject{
         //-----------------------------AUXILIARES-------------------------------
     
         actualizaContador(){
+            if(!this._muerto)
             this._contador++;
         }
 
         //se llama cuando sales de una escalera, ya no puedes subirla
         noPuedeSubir(){ 
+            if(!this._muerto){
             this._sube=false;
             this._gameObject.body.gravity.y=400;
             this._atraviesa = false;
+            }
          }
 
         flamaSpawn(posX,posY){
@@ -144,5 +154,14 @@ class Flama extends GameObject{
     
          //permite atravesar muros si no has saltado antes y si estas subiendo
         atraviesa(){ if(this._subiendo)this._atraviesa = true; }
+
+        aplastado(){
+            if(!this._muerto){
+                this._muerto = true;
+                this._vel = 0;
+                this._anim.play('aplastado');
+                this._anim.currentAnim.onComplete.add(this.morir, this);
+            }
+        }
         //-----------------------------------------------------------------------
     }

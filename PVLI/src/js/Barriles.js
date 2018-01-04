@@ -104,7 +104,7 @@ class Barril extends GameObject{
     //llamado al ser aplastado por un martillo
     aplastado(){
         if(!this._muerto){
-            this.muerto = true;
+            this._muerto = true;
             this._vel = 0;
             this._anim.play('aplastado');
             this._anim.currentAnim.onComplete.add(this.morir, this);
