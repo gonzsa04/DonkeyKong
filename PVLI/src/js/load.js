@@ -16,6 +16,7 @@ var loadScene={
 		game.load.image('decoMart', 'images/martDecor.png');
 		game.load.image('decoBarril', 'images/BarrilDecor.png');
 		game.load.image('decoEscaleras', 'images/escalerasDecor.png');
+		game.load.image('decoVidas', 'images/vidasDecor.png');
 		game.load.tilemap('map', 'images/nivel1.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 1
 		game.load.spritesheet('princesa', 'images/peachAnim.png', 92, 45, 5);//sprite de la princesa
 		game.load.spritesheet('DK', 'images/DKAnim.png', 96, 72, 14)

@@ -110,6 +110,7 @@ var playScene={
         for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada barril en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
+        this.renderHud();
     },
 
     //gestiona el input
@@ -161,6 +162,14 @@ var playScene={
             //si mario choca con algun barril muere y pierde una vida
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject))
                 this.mario.morirAnim(this);
+        }
+    },
+
+    renderHud: function(){
+        var posx = 15;
+        var posy = 30;
+        for (var i = 0; i < game.vidas; i++){
+            game.add.image(posx+i*14, posy, 'decoVidas');
         }
     },
     //-----------------------------------------------------------------------------------------------------------------------
