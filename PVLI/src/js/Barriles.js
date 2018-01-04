@@ -18,6 +18,7 @@ class Barril extends GameObject{
         //todas se guardaran en anim
         this._anim.add('rotate', [0,1,2,3], 8, true);//rotar
         this._anim.add('escalera', [4,5], 6, true);//bajar escaleras
+        this._anim.add('aplastado', [6, 7, 8], 8, false);//aplastado por el martillo
         this._anim.play('rotate');
     }
     //--------------------------------------------------------------------------------------------
@@ -99,5 +100,15 @@ class Barril extends GameObject{
 
     //marca a la variable que decide si se baja o no como no decidido
     noDecidido(){ this._baja = -1; }
+
+    //llamado al ser aplastado por un martillo
+    aplastado(){
+        if(!this._muerto){
+            this.muerto = true;
+            this._vel = 0;
+            this._anim.play('aplastado');
+            this._anim.currentAnim.onComplete.add(this.morir, this);
+        }
+    }
     //----------------------------------------------------------------------------------------------
 }

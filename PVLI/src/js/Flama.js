@@ -16,7 +16,6 @@ class Flama extends GameObject{
             this._subiendo=false;//indica si la Flama esta subiendo escaleras
             this._velMax = 125;//velocidad a la que sube las rampas
             this._velMin = 50;//velocidad normal a la que camina
-            this._muerto=false;//indica si la Flama ha muerto
             this._gameObject.body.setSize(this._gameObject.width*3/4, this._gameObject.height/2);
             //redimensionamos su collider
     
@@ -73,8 +72,8 @@ class Flama extends GameObject{
         escaleras(escalera){
             if(!this._muerto && !this._sube && this._gameObject.x < escalera.x + escalera.width*3/5 && this._gameObject.x > escalera.x + escalera.width*2/5){
                 this._persigue = Math.floor(Math.random()*2);
+                this._sube = true;
                 if (this._persigue >= 1){
-                    this._sube = true;
                     this._atraviesa = true;
                     if(!this._subiendo){
                         this._subiendo = true;
@@ -88,9 +87,6 @@ class Flama extends GameObject{
                         } 
                     }
                 }
-                else{
-                    this._sube = true; 
-                }
             }
         }
 
@@ -100,16 +96,15 @@ class Flama extends GameObject{
     
         //--------------------------------UPDATE---------------------------------------
     
-        //update del jugador, mira si la Flama choca con el suelo
+        //update de la Flama, mira si la Flama choca con el suelo
         update(plataformas, self, mario){
             //la Flama colisiona con las plataformas si no puede atravesarlas
             if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
             if(!this._subiendo){
-            if(game.physics.arcade.distanceToXY(this._gameObject, mario.x, mario.y) <= this._rango)this.DentroDeRango(mario);
-            else this.FueraDeRango(mario);
-            this._gameObject.body.velocity.y=0;
+                if(game.physics.arcade.distanceToXY(this._gameObject, mario.x, mario.y) <= this._rango)this.DentroDeRango(mario);
+                else this.FueraDeRango(mario);
+                this._gameObject.body.velocity.y=0;
             }
-            // por si se hubiera dejado de pulsar las teclas
             //(si no esta subiendo una escalera)
             else {
                 this._gameObject.body.velocity.x = 0;
@@ -149,15 +144,5 @@ class Flama extends GameObject{
     
          //permite atravesar muros si no has saltado antes y si estas subiendo
         atraviesa(){ if(this._subiendo)this._atraviesa = true; }
-    
-        //llamado cuando te golpea un barril
-        morirAnim(self){
-            if(!this._muerto){
-            this._anim.play('morir');//mueres
-            this._muerto = true;
-            this._vidas--;//se restan vidas
-            this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
-            }
-        }
         //-----------------------------------------------------------------------
     }

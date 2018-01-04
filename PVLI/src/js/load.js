@@ -21,7 +21,7 @@ var loadScene={
 		game.load.spritesheet('princesa', 'images/peachAnim.png', 92, 45, 5);//sprite de la princesa
 		game.load.spritesheet('DK', 'images/DKAnim.png', 96, 72, 14)
 		game.load.spritesheet('drumOil', 'images/oilDrum.png', 30, 57, 2);
-		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 6);//barril
+		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 9);//barril
 		game.load.spritesheet('Flama', 'images/llamaAnim.png', 32, 32, 4);//Flama
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 96, 52, 21);//mario
 		game.load.image('youWin', 'images/youWin.png');//has ganado

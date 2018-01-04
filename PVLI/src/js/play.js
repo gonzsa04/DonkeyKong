@@ -77,7 +77,7 @@ var playScene={
        //FLAMAS 
        this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
        this.frecuenciaFlamas = 25;//los flamas apareceran en un random entre 0 y esta variable
-       this.posFlax = 80; this.posFlay = 580;//posicion inicial de los barriles
+       this.posFlax = 80; this.posFlay = 580;//posicion inicial de las llamas
        this.flamas=[];//array de flamas, inicialmente todos inexistentes
        for(var i=0;i<this.numFlamas;i++){
            this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 70, 530, 175));
@@ -85,7 +85,7 @@ var playScene={
        }
        this.countF = 1;
        this.randF = 2;
-       this.GeneraFlamas(this.frecuenciaFlamas);//genera los barriles aleatoriamente
+       this.GeneraFlamas(this.frecuenciaFlamas);//genera las llamas aleatoriamente
        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContadorF, this);//suma al contador 1 cada segundo
 
        //MARTILLOS
@@ -104,10 +104,10 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.escalera13);//vemos en pantalla el collider de x gameobject (debug)
+        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
-        for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada barril en la escena
+        for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada llama en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
         this.renderHud();
@@ -144,41 +144,32 @@ var playScene={
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
         //si mario colisiona con un martillo lo coge
-        game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
             //si una flama ha colisionado con una escalera decide si subir o no
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
-            //si mario choca con alguna flama muere y pierde una vida
-            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject))
-                this.mario.morirAnim(this);
+            //si mario choca con alguna flama
+            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
+                if(this.mario.llevaMartillo())this.flamas[i].morir();//si lleva martillo la mata
+                else this.mario.morirAnim(this);//si no muere y pierde una vida
+            }
         }
 
         //para cada uno de los barriles
         for(var i = 0; i < this.barriles.length; i++){
             //si un barril esta sobre una escalera se llama al metodo PuedeBajar (callback). Si no, llama a noDecidido del barril
             if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
-            //si mario choca con algun barril muere y pierde una vida
-            if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject))
-                this.mario.morirAnim(this);
-        }
-    },
-
-    renderHud: function(){
-        var posx = 15;
-        var posy = 30;
-        for (var i = 0; i < game.vidas; i++){
-            game.add.image(posx+i*14, posy, 'decoVidas');
+            //si mario choca con algun barril
+            if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
+                if(this.mario.llevaMartillo())this.barriles[i].aplastado();//si lleva un martillo lo mata
+                else this.mario.morirAnim(this);//si no muere y pierde una vida
+            }
         }
     },
     //-----------------------------------------------------------------------------------------------------------------------
 
-    PuedeEscalarF: function(flama, escalera){
-        var i = 0;
-        while(i<this.flamas.length && this.flamas[i].gameObject != flama)i++;
-        this.flamas[i].escaleras(escalera);
-    },
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
     //si un barril esta justo sobre una escalera de bajada puede bajarla o no (random)
@@ -189,6 +180,12 @@ var playScene={
             if(barril.y < (escaleras.y-escaleras.anchor.y*escaleras.height) + escaleras.height*3/4) this.barriles[i].bajaOno();
             else this.barriles[i].noAtravieses();//si esta mas abajo de la escalera no puede atravesar mas muros
         }
+    },
+
+    PuedeEscalarF: function(flama, escalera){
+        var i = 0;
+        while(i<this.flamas.length && this.flamas[i].gameObject != flama)i++;
+        this.flamas[i].escaleras(escalera);
     },
 
     //si mario esta justo sobre la escalera puede subirla, si no no
@@ -206,8 +203,17 @@ var playScene={
         else this.rotas = false;
     },
 
-    recogeMartillo: function(mario, martillos){
-        martillos.kill();
+    //hace al martillo con el que ha chocado mario desaparecer
+    recogeMartillo: function(mario, martillo){
+        martillo.kill();
+    },
+
+    renderHud: function(){
+        var posx = 15;
+        var posy = 30;
+        for (var i = 0; i < game.vidas; i++){
+            game.add.image(posx+i*14, posy, 'decoVidas');
+        }
     },
 
     //genera barriles de forma aleatoria
@@ -219,7 +225,7 @@ var playScene={
         }
     },
 
-     //genera barriles de forma aleatoria
+     //genera llamas de forma aleatoria
      GeneraFlamas: function(numRand){
         if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
         if(this.countF >= this.randF){//si el contador llega al random
@@ -248,7 +254,7 @@ var playScene={
             this.countF=0;//se reinicia el contador y se vuelve a hacer un random
             this.randF = Math.random()*this.frecuenciaFlamas + 3;
          }
-         else {
+         else {//si todas estan en escena cogemos la primera y la volvemos a spawnear
             this.flamas[0].morir();
             this.flamas[0].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
             this.countF=0;//se reinicia el contador y se vuelve a hacer un random
