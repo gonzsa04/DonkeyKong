@@ -76,9 +76,9 @@ var playScene={
 
        //FLAMAS 
        this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
-       this.frecuenciaFlamas = 30;//los flamas apareceran en un random entre 0 y esta variable
+       this.frecuenciaFlamas = 25;//los flamas apareceran en un random entre 0 y esta variable
        this.posFlax = 80; this.posFlay = 580;//posicion inicial de los barriles
-       this.flamas=[];//array de barriles, inicialmente todos inexistentes
+       this.flamas=[];//array de flamas, inicialmente todos inexistentes
        for(var i=0;i<this.numFlamas;i++){
            this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 70, 530, 175));
            this.flamas[i].morir();
@@ -203,7 +203,7 @@ var playScene={
 
     //genera barriles de forma aleatoria
     GeneraBarriles: function(numRand){
-        if(this.count == 0) this.rand = Math.random()*numRand;//generamos un random entre 0 y numRand
+        if(this.count == 0) this.rand = Math.random()*numRand + 3;//generamos un random entre 0 y numRand
         if(this.count >= this.rand){//si el contador llega al random
             this.DK.animations.play('barril');//animacion al soltar barril
             this.DK.animations.currentAnim.onComplete.add(this.DKreset, this);//cuando termine
@@ -212,7 +212,7 @@ var playScene={
 
      //genera barriles de forma aleatoria
      GeneraFlamas: function(numRand){
-        if(this.countF == 0) this.randF = Math.random()*numRand;//generamos un random entre 0 y numRand
+        if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
         if(this.countF >= this.randF){//si el contador llega al random
             this.DK.animations.play('flama');//animacion al soltar barril
             this.DK.animations.currentAnim.onComplete.add(this.DKresetF, this);//cuando termine
@@ -227,8 +227,8 @@ var playScene={
             this.barriles[i].barrilSpawn(this.posBarx, this.posBary);//lo spawneamos
             this.count=0;//se reinicia el contador y se vuelve a hacer un random
             this.rand = Math.random()*this.frecuenciaBarriles;
-            this.DK.animations.play('normal');//reiniciamos la animacion
          }
+         this.DK.animations.play('normal');//reiniciamos la animacion
     },
 
     DKresetF: function (){
@@ -237,9 +237,15 @@ var playScene={
         if(i<this.flamas.length) {
             this.flamas[i].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
             this.countF=0;//se reinicia el contador y se vuelve a hacer un random
-            this.randF = Math.random()*this.frecuenciaFlamas;
-            this.DK.animations.play('normal');//reiniciamos la animacion
+            this.randF = Math.random()*this.frecuenciaFlamas + 3;
          }
+         else {
+            this.flamas[0].morir();
+            this.flamas[0].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
+            this.countF=0;//se reinicia el contador y se vuelve a hacer un random
+            this.randF = Math.random()*this.frecuenciaFlamas + 10;
+         }
+         this.DK.animations.play('normal');//reiniciamos la animacion
     },
 
     //suma cada segundo uno al contador, es el encargado de llamar a GeneraBarriles una vez por segundo
