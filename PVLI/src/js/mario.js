@@ -20,7 +20,6 @@ class Mario extends GameObject{
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._parado = true;//indica si mario esta parado
         this._martillo = false;//indica si mario ha cogido un martillo
-        this._contador = 0;//contador del tiempo que llevas el martillo
         this._maxTimeMartillo = 20;//tiempo maximo que puedes permanecer con el martillo
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
@@ -115,6 +114,31 @@ class Mario extends GameObject{
             if(this._gameObject.scale.x == 1) this._gameObject.body.velocity.x=this._velMin;
             else this._gameObject.body.velocity.x=-this._velMin;
         }
+        this.tocaSuelo(self);//mira si choca con el suelo y realiza la accion correspondiente
+        if(this._contador == this._maxTimeMartillo) this.desactivaMartillo();
+    }
+    //----------------------------------------------------------------------
+
+    
+    //-----------------------------AUXILIARES-------------------------------
+
+    //se llama cuando estas sobre una escalera, te permite subirla
+    puedeSubir(){ 
+        if (this._jump && !this._martillo){//si no has saltado y no llevas un martillo
+        this._sube=true;    
+        this._corriendo = false;
+        }
+     }
+
+    //se llama cuando sales de una escalera, ya no puedes subirla
+    noPuedeSubir(){ 
+        this._sube=false;
+        this._subiendo=false;
+        this._inmovil=false;
+     }
+
+    //mira si ha chocado con el suelo y hace la accion correspondiente
+    tocaSuelo(self){
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
@@ -138,38 +162,19 @@ class Mario extends GameObject{
                 }
             }
         }
+        //si esta en el aire
         else if(!this._volando){
-        this._yProv = this._gameObject.y;
-        this._volando = true;
+            this._yProv = this._gameObject.y;
+            this._volando = true;
         }
-        if(this._contador == this._maxTimeMartillo) this.desactivaMartillo();
     }
-    //----------------------------------------------------------------------
 
-    
-    //-----------------------------AUXILIARES-------------------------------
-
-    //se llama cuando estas sobre una escalera, te permite subirla
-    puedeSubir(){ 
-        if (this._jump && !this._martillo){//si no has saltado y no llevas un martillo
-        this._sube=true;    
-        this._corriendo = false;
-        }
-     }
-
-    //se llama cuando sales de una escalera, ya no puedes subirla
-    noPuedeSubir(){ 
-        this._sube=false;
-        this._subiendo=false;
-        this._inmovil=false;
-     }
-
-     //permite atravesar muros si no has saltado antes y si estas subiendo
-     atraviesa(){ if(this._subiendo)this._atraviesa = true; }
+    //permite atravesar muros si no has saltado antes y si estas subiendo
+    atraviesa(){ if(this._subiendo)this._atraviesa = true; }
 
      //llamado cuando se sueltan las teclas, anim de parado
-     noCorras(){ 
-         if(this._jump && !this._subiendo && !this._muerto){
+    noCorras(){ 
+        if(this._jump && !this._subiendo && !this._muerto){
             this._corriendo=false;
             if(!this._parado){
                 this._parado = true;
@@ -185,7 +190,7 @@ class Mario extends GameObject{
     //cuando mario ha cogido un martillo
     activaMartillo(){ 
         this._martillo = true;
-        if(this._martillo) game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
+        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
     }
 
     //cuando el efecto del martillo ha desaparecido
@@ -197,9 +202,9 @@ class Mario extends GameObject{
     //indica si mario tiene el martillo o no
     llevaMartillo(){ return this._martillo; }
 
-    actualizaContador(){
-        this._contador++;
-    }
+    actualizaContador(){ if(this._martillo) this._contador++; }
+
+    noMuerto(){ this._muerto = false; }//"revive" a mario
 
     //llamado cuando te golpea un barril
     morirAnim(self){
@@ -210,7 +215,5 @@ class Mario extends GameObject{
             this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
         }
     }
-
-    noMuerto(){ this._muerto = false; }//"revive"  mario
     //-----------------------------------------------------------------------
 }

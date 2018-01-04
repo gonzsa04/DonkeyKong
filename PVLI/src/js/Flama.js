@@ -10,8 +10,7 @@ class Flama extends GameObject{
             this._persigue = -1;
             this._rango = Rango;
             this._yObjetivo;
-            this._contador = 0;
-            this._elije = 3;
+            this._elige = 3;
             this._sube=true;//indica si la Flama puede subir escaleras
             this._subiendo=false;//indica si la Flama esta subiendo escaleras
             this._velMax = 125;//velocidad a la que sube las rampas
@@ -49,7 +48,7 @@ class Flama extends GameObject{
         }
 
         FueraDeRango(mario){
-            if(this._contador == this._elije){
+            if(this._contador == this._elige){
                 this._contador = 0;
                 this._persigue = Math.floor(Math.random()*3);
                 if(this._persigue >= 1){
@@ -91,8 +90,6 @@ class Flama extends GameObject{
                 }
             }
         }
-
-        
         //-----------------------------------------------------------------------------
     
     
@@ -134,7 +131,7 @@ class Flama extends GameObject{
     
         actualizaContador(){
             if(!this._muerto)
-            this._contador++;
+                this._contador++;
         }
 
         //se llama cuando sales de una escalera, ya no puedes subirla

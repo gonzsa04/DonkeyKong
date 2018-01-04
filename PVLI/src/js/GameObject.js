@@ -6,6 +6,7 @@ class GameObject{
         this._vel = 125;//velocidad a la que se mueve
         this._atraviesa = false;//indica si puede atravesar muros
         this._muerto = false;//indica si el gameObject esta muerto o no
+        this._contador = 0;//contador para realizar funciones auxiliares
         game.physics.arcade.enable(this._gameObject);//habilitamos fisicas, gravedad, etc.
         this._gameObject.body.gravity.y=400;
         this._gameObject.body.setSize(this._gameObject.width, this._gameObject.height/5);//collider, solo en sus pies
