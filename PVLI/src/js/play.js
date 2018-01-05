@@ -75,11 +75,11 @@ var playScene={
 
        //FLAMAS 
        this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
-       this.frecuenciaFlamas = 25;//los flamas apareceran en un random entre 0 y esta variable
+       this.frecuenciaFlamas = 40;//los flamas apareceran en un random entre 0 y esta variable
        this.posFlax = 80; this.posFlay = 580;//posicion inicial de las llamas
        this.flamas=[];//array de flamas, inicialmente todos inexistentes
        for(var i=0;i<this.numFlamas;i++){
-           this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 70, 530, 175));
+           this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 70, 530, 125));
            this.flamas[i].morir();
        }
        this.countF = 1;

@@ -7,10 +7,11 @@ class Flama extends GameObject{
             super(x, y, nombre);//llama a constructora de GamObject
             this._limiteIzq = limitizq;//limites del mapa
             this._limiteDrcha = limitdrch; 
+            this._inRange = false;
             this._persigue = -1;
             this._rango = Rango;
             this._yObjetivo;
-            this._elige = 3;
+            this._elige = 1;
             this._sube=true;//indica si la Flama puede subir escaleras
             this._subiendo=false;//indica si la Flama esta subiendo escaleras
             this._velMax = 125;//velocidad a la que sube las rampas
@@ -35,19 +36,24 @@ class Flama extends GameObject{
         mueveIzquierda(){
            
             if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
-                this._gameObject.body.velocity.x=-this._vel;
+                this._gameObject.body.velocity.x=-this._velMin;
+                this._vel = -this._velMin;
                 this._gameObject.scale.setTo(1, 1);
             }
         }
 
         mueveDerecha(){
             if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto){
-                this._gameObject.body.velocity.x=this._vel;
+                this._gameObject.body.velocity.x=this._velMin;
+                this._vel = this._velMin;
                 this._gameObject.scale.setTo(-1, 1);
             }
         }
 
         FueraDeRango(mario){
+            if(this._inRange){ this._contador = 0; this._inRange = false;}
+            if(this._gameObject.body.onWall())this._gameObject.body.velocity.x = this._velMax;
+            else this._gameObject.body.velocity.x = this._vel;//si no, vuelve a su velocidad normal
             if(this._contador == this._elige){
                 this._contador = 0;
                 this._persigue = Math.floor(Math.random()*3);
@@ -64,9 +70,15 @@ class Flama extends GameObject{
         }
 
         DentroDeRango(mario){
-            this._contador = 0;
-            if(mario.x > this._gameObject.x)this.mueveDerecha();
-            else this.mueveIzquierda();
+            if(!this._inRange){ this._contador = 0; this._inRange = true;}
+            if(this._gameObject.body.onWall())this._gameObject.body.velocity.x = this._velMax;
+            else this._gameObject.body.velocity.x = this._vel;//si no, vuelve a su velocidad normal
+            if(this._contador == this._elige*2){
+                this._contador = 0;
+                if(mario.x > this._gameObject.x)this.mueveDerecha();
+                else this.mueveIzquierda();
+            }
+            else if(this._gameObject.x + 5 > this._limiteDrcha || this._gameObject.x - 5 < this._limiteIzq) this._gameObject.body.velocity.x = 0;
         }
     
         //hace subir o bajar a la Flama por una escalera, si puede
@@ -116,10 +128,6 @@ class Flama extends GameObject{
                 else if (this._gameObject.y >= this._yObjetivo) this._subiendo = false;
             }
             //si toca el suelo
-            if(this._gameObject.body.onFloor()){
-                if(this._gameObject.body.onWall())this._vel = this._velMax;
-                else this._vel = this._velMin;//si no, vuelve a su velocidad normal
-            }
             if (mario.llevaMartillo())this._anim.play('martillo');
             else this._anim.play('normal');
         }
@@ -145,7 +153,7 @@ class Flama extends GameObject{
 
         flamaSpawn(posX,posY){
             this.spawn(posX,posY);
-            this._vel = this._velIni;
+            this._vel = 0;
             this._muerto = false;
             this._anim.play('normal');
             this._atraviesa = false;
