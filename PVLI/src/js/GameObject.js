@@ -4,6 +4,7 @@ class GameObject{
     constructor(x, y, nombre, frame){
         this._gameObject=game.add.sprite(x, y, nombre, frame);//carga el sprite
         this._vel = 125;//velocidad a la que se mueve
+        this._velIni = this._vel;//velocidad inicial
         this._atraviesa = false;//indica si puede atravesar muros
         this._muerto = false;//indica si el gameObject esta muerto o no
         this._contador = 0;//contador para realizar funciones auxiliares

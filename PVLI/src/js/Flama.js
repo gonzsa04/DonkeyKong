@@ -145,7 +145,9 @@ class Flama extends GameObject{
 
         flamaSpawn(posX,posY){
             this.spawn(posX,posY);
-            this._gameObject.body.velocity.x = 0;
+            this._vel = this._velIni;
+            this._muerto = false;
+            this._anim.play('normal');
             this._atraviesa = false;
         }
     

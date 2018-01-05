@@ -71,8 +71,7 @@ var playScene={
        }
        this.count = 0;
        this.rand = 0;
-       this.GeneraBarriles(this.frecuenciaBarriles);//genera los barriles aleatoriamente
-       game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
+       this.GeneraObjetos(this.frecuenciaBarriles, this.count);//genera los barriles aleatoriamente
 
        //FLAMAS 
        this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
@@ -85,8 +84,8 @@ var playScene={
        }
        this.countF = 1;
        this.randF = 2;
-       this.GeneraFlamas(this.frecuenciaFlamas);//genera las llamas aleatoriamente
-       game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContadorF, this);//suma al contador 1 cada segundo
+       this.GeneraObjetos(this.frecuenciaFlamas, this.countF);//genera las llamas aleatoriamente
+       game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
 
        //MARTILLOS
        this.martillos = game.add.physicsGroup();
@@ -216,56 +215,62 @@ var playScene={
         }
     },
 
-    //genera barriles de forma aleatoria
-    GeneraBarriles: function(numRand){
-        if(this.count == 0) this.rand = Math.random()*numRand + 3;//generamos un random entre 0 y numRand
-        if(this.count >= this.rand){//si el contador llega al random
-            this.DK.animations.play('barril');//animacion al soltar barril
-            this.DK.animations.currentAnim.onComplete.add(this.DKreset, this);//cuando termine
+    //genera barriles o llamas de forma aleatoria
+    GeneraObjetos: function(numRand, cont){
+        //si son barriles generamos barriles
+        if(numRand == this.frecuenciaBarriles && cont == this.count){
+            if(this.count == 0) this.rand = Math.random()*numRand + 3;//generamos un random entre 0 y numRand
+            if(this.count >= this.rand){//si el contador llega al random
+                this.DK.animations.play('barril');//animacion al soltar barril
+                this.DK.animations.currentAnim.onComplete.add(this.reseteaBarriles, this);//cuando termine
+            }
+        }
+        //si no generamos llamas
+        else{
+            if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
+            if(this.countF >= this.randF){//si el contador llega al random
+                this.DK.animations.play('flama');//animacion al soltar barril
+                this.DK.animations.currentAnim.onComplete.add(this.reseteaFlamas, this);//cuando termine
+            }
         }
     },
 
-     //genera llamas de forma aleatoria
-     GeneraFlamas: function(numRand){
-        if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
-        if(this.countF >= this.randF){//si el contador llega al random
-            this.DK.animations.play('flama');//animacion al soltar barril
-            this.DK.animations.currentAnim.onComplete.add(this.DKresetF, this);//cuando termine
+    reseteaBarriles: function(){ this.DKreset(this.barriles); },
+
+    reseteaFlamas: function(){ this.DKreset(this.flamas); },
+
+    //llamado cuando termina la animacion, se encarga de soltar un barril o una llama
+    DKreset: function (objeto){
+        var i = 0;
+        while(i<objeto.length && objeto[i].estaVivo())i++;//se busca el primer barril inexistente
+        if(i<objeto.length) {
+            if(objeto == this.barriles){
+                objeto[i].barrilSpawn(this.posBarx, this.posBary);//lo spawneamos
+                this.count=0;//se reinicia el contador y se vuelve a hacer un random
+                this.rand = Math.random()*this.frecuenciaBarriles;
+            }
+            else{
+                this.flamas[i].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
+                this.countF=0;//se reinicia el contador y se vuelve a hacer un random
+                this.randF = Math.random()*this.frecuenciaFlamas + 3;
+            }
         }
-    },
-
-    //llamado cuando termina la animacion, se encarga de soltar un barril
-    DKreset: function (){
-        var i = 0;
-        while(i<this.barriles.length && this.barriles[i].estaVivo())i++;//se busca el primer barril inexistente
-        if(i<this.barriles.length) {
-            this.barriles[i].barrilSpawn(this.posBarx, this.posBary);//lo spawneamos
-            this.count=0;//se reinicia el contador y se vuelve a hacer un random
-            this.rand = Math.random()*this.frecuenciaBarriles;
-         }
-         this.DK.animations.play('normal');//reiniciamos la animacion
-    },
-
-    DKresetF: function (){
-        var i = 0;
-        while(i<this.flamas.length && this.flamas[i].estaVivo())i++;//se busca la primera flama inexistente
-        if(i<this.flamas.length) {
-            this.flamas[i].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
-            this.countF=0;//se reinicia el contador y se vuelve a hacer un random
-            this.randF = Math.random()*this.frecuenciaFlamas + 3;
-         }
-         else {//si todas estan en escena cogemos la primera y la volvemos a spawnear
+        else if(objeto == this.flamas){
+            //si todas las llamas estan en escena cogemos la primera y la volvemos a spawnear
             this.flamas[0].morir();
             this.flamas[0].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
             this.countF=0;//se reinicia el contador y se vuelve a hacer un random
             this.randF = Math.random()*this.frecuenciaFlamas + 10;
-         }
-         this.DK.animations.play('normal');//reiniciamos la animacion
+        }
+        this.DK.animations.play('normal');//reiniciamos la animacion
     },
 
-    //suma cada segundo uno al contador, es el encargado de llamar a GeneraBarriles una vez por segundo
-    actualizaContador: function(){ this.count++; this.GeneraBarriles(this.frecuenciaBarriles);},
-    actualizaContadorF: function(){this.countF++; this.GeneraFlamas(this.frecuenciaFlamas);},
+    //suma cada segundo uno al contador, es el encargado de llamar a GeneraObjetos una vez por segundo
+    actualizaContador: function(){ 
+        this.count++;this.countF++; 
+        this.GeneraObjetos(this.frecuenciaBarriles, this.count);
+        this.GeneraObjetos(this.frecuenciaFlamas, this.countF);
+    },
 
     //llamado desde mario cuando este pierde una vida
     ResetLevel(){

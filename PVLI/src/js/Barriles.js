@@ -54,7 +54,7 @@ class Barril extends GameObject{
                 this._cambia=false;
                 this._vel=-this._vel;
                 this._escaleraAnim = false;
-                if(!this._rotaAnim){ //Si puede rotar y no esta en una escalera
+                if(!this._rotaAnim && !this._muerto){ //Si puede rotar y no esta en una escalera
                     this._anim.play("rotate");//se pone la animacion de rotar
                     this._rotaAnim = true;
                 }
@@ -86,8 +86,10 @@ class Barril extends GameObject{
     //al spawnearlo reinciamos todos sus atributos para evitar bugs
     barrilSpawn(posX,posY){
         this.spawn(posX,posY);
-        this._vel = Math.abs(this._vel)
+        this._vel = this._velIni;
+        this._muerto=false;
         this._gameObject.body.velocity.x = this._vel;
+        this._anim.play('rotate');
         this._atraviesa = false;
         this._baja=-1;
         this._cambia = false;
