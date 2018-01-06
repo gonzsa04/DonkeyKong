@@ -74,6 +74,13 @@ var playScene={
        this.GeneraObjetos(this.frecuenciaBarriles, this.count);//genera los barriles aleatoriamente
 
        //FLAMAS 
+       this.barrilAzul = game.add.sprite(this.DK.x + this.DK.width/2 - 20, this.DK.y + this.DK.height - 20, 'barrilAzul');//barril azul que se lanza
+       game.physics.arcade.enable(this.barrilAzul);//habilitamos gravedad
+       this.barrilAzul.body.gravity.y=400;//animaciones
+       this.barrilAzul.animations.add('cae', [4,5], 6, true);
+       this.barrilAzul.animations.play('cae');
+       this.barrilAzul.kill();//lo deshabilitamos
+       this.hayAzul = false;//indica si hay un barril azul
        this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
        this.frecuenciaFlamas = 40;//los flamas apareceran en un random entre 0 y esta variable
        this.posFlax = 80; this.posFlay = 580;//posicion inicial de las llamas
@@ -166,6 +173,13 @@ var playScene={
                 else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
+
+        //si hay un barril azul y llega abajo se destruye y crea una llama
+        if(this.hayAzul && this.barrilAzul.y >= 555){
+            this.barrilAzul.kill();
+            this.hayAzul = false;
+            this.DKreset(this.flamas);
+        }
     },
     //-----------------------------------------------------------------------------------------------------------------------
 
@@ -228,16 +242,21 @@ var playScene={
         //si no generamos llamas
         else{
             if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
-            if(this.countF >= this.randF){//si el contador llega al random
-                this.DK.animations.play('flama');//animacion al soltar barril
-                this.DK.animations.currentAnim.onComplete.add(this.reseteaFlamas, this);//cuando termine
+            if(this.countF >= this.randF && !this.hayAzul){//si el contador llega al random
+                this.DK.animations.play('flama');//animacion al soltar barril azul
+                this.DK.animations.currentAnim.onComplete.add(this.tiraBarrilAzul, this);//cuando termine tira un barril azul
             }
         }
     },
 
-    reseteaBarriles: function(){ this.DKreset(this.barriles); },
+    //se encarga de crear el barril azul
+    tiraBarrilAzul(){
+        this.barrilAzul.reset(this.DK.x + this.DK.width/2 - 20, this.DK.y + this.DK.height - 20);
+        this.hayAzul = true;
+        this.DK.animations.play('normal');
+    },
 
-    reseteaFlamas: function(){ this.DKreset(this.flamas); },
+    reseteaBarriles: function(){ this.DKreset(this.barriles); },
 
     //llamado cuando termina la animacion, se encarga de soltar un barril o una llama
     DKreset: function (objeto){
@@ -254,6 +273,7 @@ var playScene={
                 this.countF=0;//se reinicia el contador y se vuelve a hacer un random
                 this.randF = Math.random()*this.frecuenciaFlamas + 3;
             }
+            this.DK.animations.play('normal');//reiniciamos la animacion
         }
         else if(objeto == this.flamas){
             //si todas las llamas estan en escena cogemos la primera y la volvemos a spawnear
@@ -262,7 +282,6 @@ var playScene={
             this.countF=0;//se reinicia el contador y se vuelve a hacer un random
             this.randF = Math.random()*this.frecuenciaFlamas + 10;
         }
-        this.DK.animations.play('normal');//reiniciamos la animacion
     },
 
     //suma cada segundo uno al contador, es el encargado de llamar a GeneraObjetos una vez por segundo
