@@ -12,12 +12,13 @@ class Barril extends GameObject{
         this._rotaAnim = false;
         this._escaleraAnim = false;
         //redimensionamos su collider
-        this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*3/5);
+        this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*6/5);
 
         //ANIMACIONES
         //todas se guardaran en anim
         this._anim.add('rotate', [0,1,2,3], 8, true);//rotar
         this._anim.add('escalera', [4,5], 6, true);//bajar escaleras
+        this._anim.add('aplastado', [6, 7, 8], 8, false);//aplastado por el martillo
         this._anim.play('rotate');
     }
     //--------------------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ class Barril extends GameObject{
                 this._cambia=false;
                 this._vel=-this._vel;
                 this._escaleraAnim = false;
-                if(!this._rotaAnim){ //Si puede rotar y no esta en una escalera
+                if(!this._rotaAnim && !this._muerto){ //Si puede rotar y no esta en una escalera
                     this._anim.play("rotate");//se pone la animacion de rotar
                     this._rotaAnim = true;
                 }
@@ -85,8 +86,10 @@ class Barril extends GameObject{
     //al spawnearlo reinciamos todos sus atributos para evitar bugs
     barrilSpawn(posX,posY){
         this.spawn(posX,posY);
-        this._vel = Math.abs(this._vel)
+        this._vel = this._velIni;
+        this._muerto=false;
         this._gameObject.body.velocity.x = this._vel;
+        this._anim.play('rotate');
         this._atraviesa = false;
         this._baja=-1;
         this._cambia = false;
@@ -99,5 +102,18 @@ class Barril extends GameObject{
 
     //marca a la variable que decide si se baja o no como no decidido
     noDecidido(){ this._baja = -1; }
+
+    //llamado al ser aplastado por un martillo
+    aplastado(score, self){
+        if(!this._muerto){
+            this._muerto = true;
+            this._vel = 0;
+            this._gameObject.body.velocity.x =  this._gameObject.body.velocity.y = 0;
+            self.score+=200;
+            self.hudSpawn(200);
+            this._anim.play('aplastado');
+            this._anim.currentAnim.onComplete.add(this.morir, this);
+        }
+    }
     //----------------------------------------------------------------------------------------------
 }

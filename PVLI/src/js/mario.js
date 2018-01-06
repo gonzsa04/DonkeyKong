@@ -15,10 +15,13 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
+        this._saltado = false;
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
-        this._muerto=false;//indica si mario ha muerto
+        this._parado = true;//indica si mario esta parado
+        this._martillo = false;//indica si mario ha cogido un martillo
+        this._maxTimeMartillo = 20;//tiempo maximo que puedes permanecer con el martillo
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
@@ -30,6 +33,9 @@ class Mario extends GameObject{
         this._anim.add('escalera', [3,4], 8, true);//en una escalera
         this._anim.add('escaleraStop', [3], null);//parado en una escalera
         this._anim.add('morir', [10,11,12,13,14], 4, null);//muerto
+        this._anim.add('stopMart', [15, 16], 10, true);//parado con el martillo
+        this._anim.add('walkMart', [17, 18, 19, 20], 10, true);//andando con el martillo
+        this._anim.play('stop');
     }
     //--------------------------------------------------------------------------------------
 
@@ -40,9 +46,11 @@ class Mario extends GameObject{
     mueveIzquierda(){
         if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto && this._jump){
             this._gameObject.scale.setTo(-1, 1);//se de la vuelta
+            this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;//si esta corriendo y no saltando
-                this._anim.play('walk');
+                if(!this._martillo)this._anim.play('walk');
+                else this._anim.play("walkMart");
             }
             this._gameObject.body.velocity.x=-this._vel;
         }
@@ -52,9 +60,11 @@ class Mario extends GameObject{
     mueveDerecha(){
         if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto && this._jump){
             this._gameObject.scale.setTo(1, 1);
+            this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;
-                this._anim.play('walk');
+                if(!this._martillo)this._anim.play('walk');
+                else this._anim.play("walkMart");
             }
             this._gameObject.body.velocity.x=this._vel;
         }
@@ -62,7 +72,7 @@ class Mario extends GameObject{
 
     //hace saltar a mario a una altura, si no ha saltado ya
     saltar(){
-        if(this._jump && !this._muerto){
+        if(this._jump && !this._muerto && !this._martillo){
             this._jump=false;
             this._anim.play("saltar");//anim de saltar
             this._gameObject.body.velocity.y=this._alturaSalto;
@@ -105,24 +115,8 @@ class Mario extends GameObject{
             if(this._gameObject.scale.x == 1) this._gameObject.body.velocity.x=this._velMin;
             else this._gameObject.body.velocity.x=-this._velMin;
         }
-        //si toca el suelo
-        if(this._gameObject.body.onFloor()){
-            //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
-            if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
-            if (!this._muerto)this._yProv = this.y;
-            else this._yProv = 600;
-            if(this._gameObject.body.onWall())this._vel = this._velMax;
-            else this._vel = this._velMin;//si no, vuelve a su velocidad normal
-            this._jump=true;//cuando toca el suelo puede volver a saltar
-            this._inmovil=false;//puede moverse en el eje x otra vez
-            this._subiendo=false;//ya no esta subiendo
-            this.volando = false;
-            if(!this._muerto) this._anim.play("walk");
-        }
-        else if(!this._volando){
-        this._yProv = this._gameObject.y;
-        this._volando = true;
-        }
+        this.tocaSuelo(self);//mira si choca con el suelo y realiza la accion correspondiente
+        if(this._contador == this._maxTimeMartillo) this.desactivaMartillo();
     }
     //----------------------------------------------------------------------
 
@@ -131,7 +125,7 @@ class Mario extends GameObject{
 
     //se llama cuando estas sobre una escalera, te permite subirla
     puedeSubir(){ 
-        if (this._jump){//si no has saltado
+        if (this._jump && !this._martillo){//si no has saltado y no llevas un martillo
         this._sube=true;    
         this._corriendo = false;
         }
@@ -144,19 +138,75 @@ class Mario extends GameObject{
         this._inmovil=false;
      }
 
-     //permite atravesar muros si no has saltado antes y si estas subiendo
-     atraviesa(){ if(this._subiendo)this._atraviesa = true; }
+    //mira si ha chocado con el suelo y hace la accion correspondiente
+    tocaSuelo(self){
+        //si toca el suelo
+        if(this._gameObject.body.onFloor()){
+            this._saltado = false;
+            //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
+            if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
+            if (!this._muerto)this._yProv = this.y;
+            else this._yProv = 600;
+            if(this._gameObject.body.onWall())this._vel = this._velMax;
+            else this._vel = this._velMin;//si no, vuelve a su velocidad normal
+            this._jump=true;//cuando toca el suelo puede volver a saltar
+            this._inmovil=false;//puede moverse en el eje x otra vez
+            this._subiendo=false;//ya no esta subiendo
+            this.volando = false;
+            if(!this._muerto) {
+                if(!this._parado){
+                    if(!this._martillo) this._anim.play("walk");
+                    else this._anim.play("walkMart");
+                }
+                else{
+                    if(!this._martillo) this._anim.play("stop");
+                    else this._anim.play("stopMart");
+                }
+            }
+        }
+        //si esta en el aire
+        else if(!this._volando){
+            this._yProv = this._gameObject.y;
+            this._volando = true;
+        }
+    }
+
+    //permite atravesar muros si no has saltado antes y si estas subiendo
+    atraviesa(){ if(this._subiendo)this._atraviesa = true; }
 
      //llamado cuando se sueltan las teclas, anim de parado
-     noCorras(){ 
-         if(this._jump && !this._subiendo && !this._muerto){
-         this._corriendo=false; 
-         this._anim.play("stop");
-         }
+    noCorras(){ 
+        if(this._jump && !this._subiendo && !this._muerto){
+            this._corriendo=false;
+            if(!this._parado){
+                this._parado = true;
+                if(!this._martillo)this._anim.play("stop");
+                else this._anim.play("stopMart");
+            }
+        }
     }
 
     //llamado cuando dejas de subir por una escalera
     noEscales(){ if(this._sube && this._subiendo && !this._muerto) this._anim.play("escaleraStop"); }
+
+    //cuando mario ha cogido un martillo
+    activaMartillo(){ 
+        this._martillo = true;
+        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
+    }
+
+    //cuando el efecto del martillo ha desaparecido
+    desactivaMartillo(){ 
+        this._contador = 0;
+        this._martillo = false; 
+    }
+
+    //indica si mario tiene el martillo o no
+    llevaMartillo(){ return this._martillo; }
+
+    actualizaContador(){ if(this._martillo) this._contador++; }
+
+    noMuerto(){ this._muerto = false; }//"revive" a mario
 
     //llamado cuando te golpea un barril
     morirAnim(self){
@@ -168,6 +218,10 @@ class Mario extends GameObject{
         }
     }
 
-    noMuerto(){ this._muerto = false; }//"revive"  mario
+    haSaltado(){
+        this._saltado = true;
+    }
+    get muerto(){ return this._muerto; }
+    get saltado(){ return this._saltado; }
     //-----------------------------------------------------------------------
 }
