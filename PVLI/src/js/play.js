@@ -43,6 +43,16 @@ var playScene={
         this.oilDrum.animations.add('normal', [0,1], 2, true);
         this.oilDrum.animations.play('normal');
 
+        //TEXTO
+        this.score = 0;
+        this.bonus = 5000;
+        this.contB = 0;
+        if(game.highScore == undefined) game.highScore = this.score;
+        this.text = game.add.bitmapText(0, 0, 'gem', "", 12);
+        this.scoreText = game.add.bitmapText(100, 6, 'gem', this.score.toString(), 20);
+        this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);
+        this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);
+        
         //PRINCESA
         //princesa a la que rescatar
         this.princesa=game.add.sprite(220, 40, 'princesa');
@@ -76,8 +86,8 @@ var playScene={
        //FLAMAS 
        this.barrilAzul = game.add.sprite(this.DK.x + this.DK.width/2 - 20, this.DK.y + this.DK.height - 20, 'barrilAzul');//barril azul que se lanza
        game.physics.arcade.enable(this.barrilAzul);//habilitamos gravedad
-       this.barrilAzul.body.gravity.y=400;//animaciones
-       this.barrilAzul.animations.add('cae', [4,5], 6, true);
+       this.barrilAzul.body.gravity.y=200;
+       this.barrilAzul.animations.add('cae', [4,5], 6, true);//animaciones
        this.barrilAzul.animations.play('cae');
        this.barrilAzul.kill();//lo deshabilitamos
        this.hayAzul = false;//indica si hay un barril azul
@@ -110,7 +120,8 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de x gameobject (debug)
+        console.log(this.mario.saltado);
+        //game.debug.body(this.barriles[0]);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada llama en la escena
@@ -158,7 +169,7 @@ var playScene={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo())this.flamas[i].aplastado();//si lleva martillo la mata
+                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this.score, this);//si lleva martillo la mata
                 else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
@@ -169,8 +180,15 @@ var playScene={
             if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
             //si mario choca con algun barril
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
-                if(this.mario.llevaMartillo())this.barriles[i].aplastado();//si lleva un martillo lo mata
-                else this.mario.morirAnim(this);//si no muere y pierde una vida
+                if(this.mario.y > this.barriles[i].y){
+                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(this.score, this);//si lleva un martillo lo mata
+                    else this.mario.morirAnim(this);//si no muere y pierde una vida
+                }
+                else if(!this.mario.saltado && !this.mario.muerto && !this.mario.llevaMartillo()){
+                    this.mario.haSaltado();
+                    this.score+=100;
+                    this.hudSpawn(100);
+                }
             }
         }
 
@@ -224,9 +242,20 @@ var playScene={
     renderHud: function(){
         var posx = 15;
         var posy = 30;
-        for (var i = 0; i < game.vidas; i++){
-            game.add.image(posx+i*14, posy, 'decoVidas');
-        }
+        for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
+        this.scoreText.text = this.score.toString();
+        if(this.score > game.highScore){
+            game.highScore = this.score;
+            this.highScoreText.text = game.highScore.toString();
+        } 
+    },
+
+    hudSpawn(score){
+        this.textB = true;
+        this.textCont = 0;
+        this.text.x = this.mario.x;
+        this.text.y = this.mario.y;
+        this.text.text = score.toString();
     },
 
     //genera barriles o llamas de forma aleatoria
@@ -286,9 +315,31 @@ var playScene={
 
     //suma cada segundo uno al contador, es el encargado de llamar a GeneraObjetos una vez por segundo
     actualizaContador: function(){ 
-        this.count++;this.countF++; 
+        this.count++;this.countF++;
+        this.actualizaTexto();
         this.GeneraObjetos(this.frecuenciaBarriles, this.count);
         this.GeneraObjetos(this.frecuenciaFlamas, this.countF);
+        this.actualizaBonus();
+    },
+
+    actualizaBonus: function(){
+        this.contB++;
+        if(this.contB >= 4 && this.bonus > 0){
+            this.contB = 0;
+            this.bonus-=100;
+            this.bonusText.text = this.bonus.toString();
+        }
+    },
+
+    actualizaTexto(){
+        if(this.textB){
+            this.textCont++;
+            this.text.y-=5;
+            if(this.textCont > 3){
+                this.textB = false;
+                this.text.text = "";
+            }
+        } 
     },
 
     //llamado desde mario cuando este pierde una vida
@@ -307,6 +358,8 @@ var playScene={
     //metodo llamado cuando ganamos (true) o perdemos (false)
     fin: function(ganar){
         //eliminamos a mario y a los barriles
+        this.score += this.bonus;
+        this.bonus = 0;
         this.mario.morir();
         for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
         game.vidas = 3;//reestablecemos las vidas

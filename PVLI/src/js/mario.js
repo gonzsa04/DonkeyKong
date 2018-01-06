@@ -15,6 +15,7 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
+        this._saltado = false;
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
@@ -141,6 +142,7 @@ class Mario extends GameObject{
     tocaSuelo(self){
         //si toca el suelo
         if(this._gameObject.body.onFloor()){
+            this._saltado = false;
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
             if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
             if (!this._muerto)this._yProv = this.y;
@@ -215,5 +217,11 @@ class Mario extends GameObject{
             this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
         }
     }
+
+    haSaltado(){
+        this._saltado = true;
+    }
+    get muerto(){ return this._muerto; }
+    get saltado(){ return this._saltado; }
     //-----------------------------------------------------------------------
 }

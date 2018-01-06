@@ -162,9 +162,12 @@ class Flama extends GameObject{
          //permite atravesar muros si no has saltado antes y si estas subiendo
         atraviesa(){ if(this._subiendo)this._atraviesa = true; }
 
-        aplastado(){
+        aplastado(score, self){
             if(!this._muerto){
                 this._muerto = true;
+                this._gameObject.body.velocity.x =  this._gameObject.body.velocity.y = 0;
+                self.score+=300;
+                self.hudSpawn(300);
                 this._vel = 0;
                 this._anim.play('aplastado');
                 this._anim.currentAnim.onComplete.add(this.morir, this);

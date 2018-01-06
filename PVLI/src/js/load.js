@@ -4,6 +4,7 @@ var loadScene={
 	preload:function(){
 		//informamos de que esta cargando
 		var loading=game.add.text(180, 250, 'Loading...', {font: '40px Courier', fill: '#FFF'})
+		game.load.bitmapFont('gem', 'images/gem.png', 'images/gem.xml');
 		game.load.spritesheet('titulo', 'images/Titulo.png', 450, 240, 2);//sprite del titulo
 		game.load.spritesheet('start', 'images/start.png', 76, 21, 2);//sprites de botones
 		game.load.spritesheet('controls', 'images/controles.png', 120, 21, 2);

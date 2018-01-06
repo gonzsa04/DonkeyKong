@@ -12,7 +12,7 @@ class Barril extends GameObject{
         this._rotaAnim = false;
         this._escaleraAnim = false;
         //redimensionamos su collider
-        this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*3/5);
+        this._gameObject.body.setSize(this._gameObject.width*4/5, this._gameObject.height*6/5);
 
         //ANIMACIONES
         //todas se guardaran en anim
@@ -104,10 +104,13 @@ class Barril extends GameObject{
     noDecidido(){ this._baja = -1; }
 
     //llamado al ser aplastado por un martillo
-    aplastado(){
+    aplastado(score, self){
         if(!this._muerto){
             this._muerto = true;
             this._vel = 0;
+            this._gameObject.body.velocity.x =  this._gameObject.body.velocity.y = 0;
+            self.score+=200;
+            self.hudSpawn(200);
             this._anim.play('aplastado');
             this._anim.currentAnim.onComplete.add(this.morir, this);
         }
