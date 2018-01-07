@@ -370,6 +370,7 @@ var playScene={
         this.bonus = 0;
         this.mario.morir();
         for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
+        for(var i = 0;i<this.flamas.length; i++)this.flamas[i].morir();
         game.vidas = 3;//reestablecemos las vidas
         //llamamos al menu de ganar o perder
         if(ganar){
