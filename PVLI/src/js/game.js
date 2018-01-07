@@ -1,5 +1,6 @@
 var game = new Phaser.Game(600, 600, Phaser.AUTO);//variable del juego, con una ventana de 600x600
 game.vidas = 3;//vidas de mario
+game.highScore = 0;//puntuacion maxima
 
 //añadimos los estados
 game.state.add('boot', bootScene);

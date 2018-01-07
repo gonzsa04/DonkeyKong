@@ -44,14 +44,14 @@ var playScene={
         this.oilDrum.animations.play('normal');
 
         //TEXTO
-        this.score = 0;
-        this.bonus = 5000;
-        this.contB = 0;
-        if(game.highScore == undefined) game.highScore = this.score;
-        this.text = game.add.bitmapText(0, 0, 'gem', "", 12);
-        this.scoreText = game.add.bitmapText(100, 6, 'gem', this.score.toString(), 20);
-        this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);
-        this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);
+        this.score = 0;//puntuacion actual
+        this.bonus = 5000;//puntuacion de bonus
+        this.contB = 0;//contador de bonus
+        this.textCont = 0;//contador de texto emergente cuando saltas un barril
+        this.text = game.add.bitmapText(0, 0, 'gem', "", 12);//texto de puntuacion al saltar barriles
+        this.scoreText = game.add.bitmapText(100, 6, 'gem', this.score.toString(), 20);//texto de puntuacion
+        this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);//texto de maxima puntuacion
+        this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);//texto de bonus
         
         //PRINCESA
         //princesa a la que rescatar
@@ -120,14 +120,13 @@ var playScene={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        console.log(this.mario.saltado);
         //game.debug.body(this.barriles[0]);//vemos en pantalla el collider de x gameobject (debug)
         this.mario.update(this.layer, this);//llamamos al update de mario
         for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
         for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada llama en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
-        this.renderHud();
+        this.renderHud();//pintamos el hud
     },
 
     //gestiona el input
@@ -180,14 +179,16 @@ var playScene={
             if(!game.physics.arcade.overlap(this.barriles[i].gameObject, this.escaleras, this.PuedeBajar, null, this)) this.barriles[i].noDecidido();
             //si mario choca con algun barril
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
-                if(this.mario.y > this.barriles[i].y){
+                //si mario colisiona con la parte baja del barril
+                if(this.mario.y > this.barriles[i].y - this.barriles[i].gameObject.height/2){
                     if(this.mario.llevaMartillo()) this.barriles[i].aplastado(this.score, this);//si lleva un martillo lo mata
                     else this.mario.morirAnim(this);//si no muere y pierde una vida
                 }
+                //si mario esta por encima del barril y no ha saltado ningun barril y no esta muerto y no lleva martillo
                 else if(!this.mario.saltado && !this.mario.muerto && !this.mario.llevaMartillo()){
-                    this.mario.haSaltado();
-                    this.score+=100;
-                    this.hudSpawn(100);
+                    this.mario.haSaltado();//marcamos que ha saltado un barril
+                    this.score+=100;//añadimos la puntuacion correspondiente
+                    this.hudSpawn(100);//la escribimos en el momento del salto
                 }
             }
         }
@@ -198,6 +199,52 @@ var playScene={
             this.hayAzul = false;
             this.DKreset(this.flamas);
         }
+    },
+    //-----------------------------------------------------------------------------------------------------------------------
+
+
+    //---------------------------------------------------HUD-----------------------------------------------------------------
+    //dibuja el hud del juego
+    renderHud: function(){
+        var posx = 15;
+        var posy = 30;//pintamos las vidas que le quedan a mario
+        for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
+        this.scoreText.text = this.score.toString();//escribimos la puntuacion
+        //si la puntuacion es mayor que la puntuacion maxima, actualizamos la maxima
+        if(this.score > game.highScore){
+            game.highScore = this.score;
+            this.highScoreText.text = game.highScore.toString();
+        } 
+    },
+
+    //suma cada segundo uno al contador de bonus, y actualiza este si fuera necesario
+    actualizaBonus: function(){
+        this.contB++;//si han pasado 4 segundos y bonus sigue siendo mayor que 0
+        if(this.contB >= 4 && this.bonus > 0){
+            this.contB = 0;//se reinicia el contador de bonus
+            this.bonus-=100;//se resta 100 al bonus y se escribe
+            this.bonusText.text = this.bonus.toString();
+        }
+    },
+
+    //escribe en la posicion de mario una puntuacion dada (llamado cuando salta barriles)
+    hudSpawn(score){
+        this.textCont = 0;//reiniciamos contador
+        this.text.x = this.mario.x;
+        this.text.y = this.mario.y;
+        this.text.text = score.toString();
+    },
+
+    //suma cada segundo uno al contador de texto si hay un texto activo
+    actualizaTexto(){
+        if(this.text.text != ""){
+            this.textCont++;
+            this.text.y-=5;//si hay un texto activo va subiendo en la y durante tres segundos
+            if(this.textCont >= 3){
+                this.textB = false;
+                this.text.text = "";//despues desaparece
+            }
+        } 
     },
     //-----------------------------------------------------------------------------------------------------------------------
 
@@ -237,25 +284,6 @@ var playScene={
     //hace al martillo con el que ha chocado mario desaparecer
     recogeMartillo: function(mario, martillo){
         martillo.kill();
-    },
-
-    renderHud: function(){
-        var posx = 15;
-        var posy = 30;
-        for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
-        this.scoreText.text = this.score.toString();
-        if(this.score > game.highScore){
-            game.highScore = this.score;
-            this.highScoreText.text = game.highScore.toString();
-        } 
-    },
-
-    hudSpawn(score){
-        this.textB = true;
-        this.textCont = 0;
-        this.text.x = this.mario.x;
-        this.text.y = this.mario.y;
-        this.text.text = score.toString();
     },
 
     //genera barriles o llamas de forma aleatoria
@@ -313,33 +341,13 @@ var playScene={
         }
     },
 
-    //suma cada segundo uno al contador, es el encargado de llamar a GeneraObjetos una vez por segundo
+    //suma cada segundo uno al contador
     actualizaContador: function(){ 
-        this.count++;this.countF++;
-        this.actualizaTexto();
-        this.GeneraObjetos(this.frecuenciaBarriles, this.count);
+        this.count++;this.countF++;//contadores
+        this.actualizaTexto();//actualizamos los textos que salen al saltar sobre un barril
+        this.GeneraObjetos(this.frecuenciaBarriles, this.count);//generador de objetos
         this.GeneraObjetos(this.frecuenciaFlamas, this.countF);
-        this.actualizaBonus();
-    },
-
-    actualizaBonus: function(){
-        this.contB++;
-        if(this.contB >= 4 && this.bonus > 0){
-            this.contB = 0;
-            this.bonus-=100;
-            this.bonusText.text = this.bonus.toString();
-        }
-    },
-
-    actualizaTexto(){
-        if(this.textB){
-            this.textCont++;
-            this.text.y-=5;
-            if(this.textCont > 3){
-                this.textB = false;
-                this.text.text = "";
-            }
-        } 
+        this.actualizaBonus();//actualizamos el bonus
     },
 
     //llamado desde mario cuando este pierde una vida

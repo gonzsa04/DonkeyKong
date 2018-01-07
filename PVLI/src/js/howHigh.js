@@ -1,6 +1,13 @@
 //estado how high can you get
 var howHighScene = {
     create:function(){
+        //HUD
+        game.add.image(0, 0, 'hud');
+        var posx = 15;
+        var posy = 30;//pintamos las vidas que le quedan a mario
+        for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
+        this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);//texto de maxima puntuacion
+        //DK
         this.dk = game.add.sprite(0, 0, 'howHigh');
         this.dk.x = game.width/2 - this.dk.width/2;
         this.dk.y = 3*game.height/4 - this.dk.height/2;

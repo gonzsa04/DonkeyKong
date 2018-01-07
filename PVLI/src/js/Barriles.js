@@ -108,7 +108,7 @@ class Barril extends GameObject{
         if(!this._muerto){
             this._muerto = true;
             this._vel = 0;
-            this._gameObject.body.velocity.x =  this._gameObject.body.velocity.y = 0;
+            this._gameObject.body.velocity.x = this._gameObject.body.velocity.y = 0;
             self.score+=200;
             self.hudSpawn(200);
             this._anim.play('aplastado');

@@ -15,13 +15,13 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
-        this._saltado = false;
+        this._saltado = false;//indica si ha saltado un barril
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._parado = true;//indica si mario esta parado
         this._martillo = false;//indica si mario ha cogido un martillo
-        this._maxTimeMartillo = 20;//tiempo maximo que puedes permanecer con el martillo
+        this._maxTimeMartillo = 15;//tiempo maximo que puedes permanecer con el martillo
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
@@ -218,10 +218,11 @@ class Mario extends GameObject{
         }
     }
 
-    haSaltado(){
-        this._saltado = true;
-    }
-    get muerto(){ return this._muerto; }
+    //indica que mario ha saltado un barril
+    haSaltado(){ this._saltado = true; }
+    //devuelve si mario ha saltado un barril
     get saltado(){ return this._saltado; }
+    //devuelve si mario ha muerto
+    get muerto(){ return this._muerto; }
     //-----------------------------------------------------------------------
 }

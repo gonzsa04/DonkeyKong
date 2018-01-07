@@ -32,7 +32,7 @@ class Flama extends GameObject{
     
         //----------------------------------MOVIMIENTO------------------------------------------
     
-        //mueve a la Flamaa una velocidad si puede hacerlo y si no se sale del mapa
+        //mueve a la Flama a una velocidad si puede hacerlo y si no se sale del mapa
         mueveIzquierda(){
            
             if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
