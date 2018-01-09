@@ -3,10 +3,8 @@ class Flama extends GameObject{
     
         //--------------------------------------CONSTRUCTORA-------------------------------------
         //constructora de la Flama
-        constructor(x, y, nombre, limitizq, limitdrch, Rango){
+        constructor(x, y, nombre, Rango){
             super(x, y, nombre);//llama a constructora de GamObject
-            this._limiteIzq = limitizq;//limites del mapa
-            this._limiteDrcha = limitdrch; 
             this._inRange = false;
             this._persigue = -1;
             this._rango = Rango;
@@ -35,17 +33,17 @@ class Flama extends GameObject{
         //mueve a la Flama a una velocidad si puede hacerlo y si no se sale del mapa
         mueveIzquierda(){
            
-            if(!this._inmovil && this._gameObject.x > this._limiteIzq && !this._muerto){
-                this._gameObject.body.velocity.x=-this._velMin;
+            if(!this._inmovil && !this._muerto){
                 this._vel = -this._velMin;
+                this._velMax = -125;
                 this._gameObject.scale.setTo(1, 1);
             }
         }
 
         mueveDerecha(){
-            if(!this._inmovil && this._gameObject.x < this._limiteDrcha && !this._muerto){
-                this._gameObject.body.velocity.x=this._velMin;
+            if(!this._inmovil && !this._muerto){
                 this._vel = this._velMin;
+                this._velMax = 125;
                 this._gameObject.scale.setTo(-1, 1);
             }
         }
@@ -66,7 +64,6 @@ class Flama extends GameObject{
                     else this.mueveDerecha();
                 }
             }
-            else if(this._gameObject.x + 5 > this._limiteDrcha || this._gameObject.x - 5 < this._limiteIzq) this._gameObject.body.velocity.x = 0;
         }
 
         DentroDeRango(mario){
@@ -78,7 +75,6 @@ class Flama extends GameObject{
                 if(mario.x > this._gameObject.x)this.mueveDerecha();
                 else this.mueveIzquierda();
             }
-            else if(this._gameObject.x + 5 > this._limiteDrcha || this._gameObject.x - 5 < this._limiteIzq) this._gameObject.body.velocity.x = 0;
         }
     
         //hace subir o bajar a la Flama por una escalera, si puede
@@ -108,11 +104,12 @@ class Flama extends GameObject{
         //--------------------------------UPDATE---------------------------------------
     
         //update de la Flama, mira si la Flama choca con el suelo
-        update(plataformas, self, mario){
+        update(plataformas, self, mario, collidersF){
             if(!this._muerto){
             //la Flama colisiona con las plataformas si no puede atravesarlas
             if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
             if(!this._subiendo){
+                game.physics.arcade.collide(this._gameObject, collidersF);
                 if(game.physics.arcade.distanceToXY(this._gameObject, mario.x, mario.y) <= this._rango)this.DentroDeRango(mario);
                 else this.FueraDeRango(mario);
                 this._gameObject.body.velocity.y=0;

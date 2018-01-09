@@ -32,14 +32,17 @@ var playScene={
         //cargamos un mapa de tiled con las plataformas del nivel1
         this.map=game.add.tilemap('map');
         this.map.addTilesetImage('plataforma');
-        this.layer=this.map.createLayer('Capa de Patrones 1');
-        this.map.setCollisionBetween(1, 300, true, this.layer);
-        this.layer.resizeWorld();
+        this.plataformas=this.map.createLayer('Plataformas');
+        this.map.setCollisionBetween(1, 300, true, this.plataformas);
+        this.plataformas.resizeWorld();
+        this.collidersF=this.map.createLayer('CollidersF');
+        this.map.setCollisionBetween(1, 300, true, this.collidersF);
+        this.collidersF.resizeWorld();
 
         //DECORADO
         game.add.image(30, 107, 'decoBarril');
         game.add.image(165, 40, 'decoEscaleras');
-        this.oilDrum = game.add.sprite(50, 520, 'drumOil');
+        this.oilDrum = game.add.sprite(100, 520, 'drumOil');
         this.oilDrum.animations.add('normal', [0,1], 2, true);
         this.oilDrum.animations.play('normal');
 
@@ -96,7 +99,7 @@ var playScene={
        this.posFlax = 80; this.posFlay = 580;//posicion inicial de las llamas
        this.flamas=[];//array de flamas, inicialmente todos inexistentes
        for(var i=0;i<this.numFlamas;i++){
-           this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 70, 530, 125));
+           this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama', 125));
            this.flamas[i].morir();
        }
        this.countF = 1;
@@ -121,9 +124,9 @@ var playScene={
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
         //game.debug.body(this.barriles[0]);//vemos en pantalla el collider de x gameobject (debug)
-        this.mario.update(this.layer, this);//llamamos al update de mario
-        for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.layer);//update de cada barril en la escena
-        for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.layer, this, this.mario);//update de cada llama en la escena
+        this.mario.update(this.plataformas, this);//llamamos al update de mario
+        for(var i = 0; i < this.barriles.length; i++) this.barriles[i].update(this.plataformas);//update de cada barril en la escena
+        for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.plataformas, this, this.mario, this.collidersF);//update de cada llama en la escena
         this.teclas();//llamamos al gestor del input
         this.colisiones();//comprobamos las colisiones
         this.renderHud();//pintamos el hud
@@ -169,7 +172,7 @@ var playScene={
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
                 if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this.score, this);//si lleva martillo la mata
-                else this.mario.morirAnim(this);//si no muere y pierde una vida
+                //else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
 
