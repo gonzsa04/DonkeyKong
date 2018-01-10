@@ -47,12 +47,11 @@ var playScene={
         this.oilDrum.animations.play('normal');
 
         //TEXTO
-        this.score = 0;//puntuacion actual
         this.bonus = 5000;//puntuacion de bonus
         this.contB = 0;//contador de bonus
         this.textCont = 0;//contador de texto emergente cuando saltas un barril
         this.text = game.add.bitmapText(0, 0, 'gem', "", 12);//texto de puntuacion al saltar barriles
-        this.scoreText = game.add.bitmapText(100, 6, 'gem', this.score.toString(), 20);//texto de puntuacion
+        this.scoreText = game.add.bitmapText(100, 6, 'gem', game.score.toString(), 20);//texto de puntuacion
         this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);//texto de maxima puntuacion
         this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);//texto de bonus
         
@@ -117,7 +116,7 @@ var playScene={
        //por ultimo el jugador, para que se pinte por encima de todo
        this.rotas = false;
        this.posInix = 150; this.posIniy = 555;//posicion inicial de mario
-       this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim');
+       this.mario=new Mario(this.posInix, this.posIniy, 'marioAnim', 70, 530);
     },
 
 
@@ -162,6 +161,8 @@ var playScene={
         }
         //si mario llega hasta la princesa gana (true)
         if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
+        //si mario choca con DK muere
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.DK)) this.mario.morirAnim(this);
         //si mario colisiona con un martillo lo coge
         if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
@@ -171,8 +172,8 @@ var playScene={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this.score, this);//si lleva martillo la mata
-                //else this.mario.morirAnim(this);//si no muere y pierde una vida
+                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(game.score, this);//si lleva martillo la mata
+                else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
 
@@ -184,13 +185,13 @@ var playScene={
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
                 //si mario colisiona con la parte baja del barril
                 if(this.mario.y > this.barriles[i].y - this.barriles[i].gameObject.height/2){
-                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(this.score, this);//si lleva un martillo lo mata
+                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(game.score, this);//si lleva un martillo lo mata
                     else this.mario.morirAnim(this);//si no muere y pierde una vida
                 }
                 //si mario esta por encima del barril y no ha saltado ningun barril y no esta muerto y no lleva martillo
                 else if(!this.mario.saltado && !this.mario.muerto && !this.mario.llevaMartillo()){
                     this.mario.haSaltado();//marcamos que ha saltado un barril
-                    this.score+=100;//añadimos la puntuacion correspondiente
+                    game.score+=100;//añadimos la puntuacion correspondiente
                     this.hudSpawn(100);//la escribimos en el momento del salto
                 }
             }
@@ -212,10 +213,10 @@ var playScene={
         var posx = 15;
         var posy = 30;//pintamos las vidas que le quedan a mario
         for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
-        this.scoreText.text = this.score.toString();//escribimos la puntuacion
+        this.scoreText.text = game.score.toString();//escribimos la puntuacion
         //si la puntuacion es mayor que la puntuacion maxima, actualizamos la maxima
-        if(this.score > game.highScore){
-            game.highScore = this.score;
+        if(game.score > game.highScore){
+            game.highScore = game.score;
             this.highScoreText.text = game.highScore.toString();
         } 
     },
@@ -364,19 +365,19 @@ var playScene={
     },
 
     //llamado cuando la princesa deja de hacer la animacion de haber sido rescatada
-    ganar: function(){game.state.start('ganar');},
+    ganar: function(){game.state.start('howHigh');},
 
     //metodo llamado cuando ganamos (true) o perdemos (false)
     fin: function(ganar){
         //eliminamos a mario y a los barriles
-        this.score += this.bonus;
+        game.score += this.bonus;
         this.bonus = 0;
         this.mario.morir();
         for(var i = 0;i<this.barriles.length; i++)this.barriles[i].morir();
         for(var i = 0;i<this.flamas.length; i++)this.flamas[i].morir();
-        game.vidas = 3;//reestablecemos las vidas
         //llamamos al menu de ganar o perder
         if(ganar){
+            game.nivel++;
             this.princesa.animations.play('ganar');
             this.princesa.animations.currentAnim.onComplete.add(this.ganar, this);//cuando termine
         }

@@ -1,6 +1,9 @@
 //estado perder
 var perderScene={
     create:function(){
+        game.vidas = 3;
+        game.score = 0;
+        game.nivel = 1;
         var gameOver = game.add.sprite(100, 250, 'gameOver');
         gameOver.x = game.width/2 - gameOver.width/2;
         gameOver.y = game.height/2 - gameOver.height/2;

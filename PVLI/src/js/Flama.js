@@ -88,11 +88,11 @@ class Flama extends GameObject{
                         this._subiendo = true;
                         if(this._gameObject.y < escalera.y + escalera.height/2){
                             this._gameObject.body.velocity.y = this._velMin;
-                            this._yObjetivo = this._gameObject.y + escalera.height*5/6*escalera.scale.y;
+                            this._yObjetivo = this._gameObject.y + escalera.height*escalera.scale.y;
                         }
                         else{
                             this._gameObject.body.velocity.y = -this._velMin;
-                            this._yObjetivo = this._gameObject.y - escalera.height*4.7/6*escalera.scale.y;
+                            this._yObjetivo = this._gameObject.y - escalera.height*escalera.scale.y;
                         } 
                     }
                 }

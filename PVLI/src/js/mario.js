@@ -3,11 +3,11 @@ class Mario extends GameObject{
 
     //--------------------------------------CONSTRUCTORA-------------------------------------
     //constructora de Mario
-    constructor(x, y, nombre){
+    constructor(x, y, nombre, limitIzq, limitDrch){
         super(x, y, nombre);//llama a constructora de GamObject
         this._jump=true;//indica si mario puede saltar
-        this._limiteIzq = 70;//limites del mapa
-        this._limiteDrcha = 530;
+        this._limiteIzq = limitIzq;//limites del mapa
+        this._limiteDrcha = limitDrch;
         this._yProv = 600;//variable donde guardamos la altura provisional
         this._alturaCaida = 50;//altura maxima desde la que caer   
         this._volando = false;//indica si esta en el aire o no

@@ -10,21 +10,31 @@ var loadScene={
 		game.load.spritesheet('controls', 'images/controles.png', 120, 21, 2);
 		game.load.image('menuControles', 'images/controls.png');//sprites del menu de controles
 		game.load.image('howHigh', 'images/howhigh.png');//how high can you get?
+		game.load.image('howHigh2', 'images/howhigh2.png');//how high can you get?
+		game.load.image('howHigh3', 'images/howhigh3.png');//how high can you get?
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
+		game.load.image('plataforma2', 'images/plataforma2.png');//sprite de la plataforma
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
+		game.load.image('escalerasA', 'images/escalerasA.png');//sprite de las escaleras
+		game.load.image('escalerasG', 'images/escalerasG.png');//sprite de las escaleras
+		game.load.image('escalerasGG', 'images/escalerasGG.png');//sprite de las escaleras
 		game.load.image('escalerasRotas', 'images/escalerasRotas.png');//sprite de las escaleras
 		game.load.image('hud', 'images/hud.png');//hud del juego
 		game.load.image('decoMart', 'images/martDecor.png');
 		game.load.image('decoBarril', 'images/BarrilDecor.png');
 		game.load.image('decoEscaleras', 'images/escalerasDecor.png');
 		game.load.image('decoVidas', 'images/vidasDecor.png');
+		game.load.image('decoMovil', 'images/PlatmovilDecor.png');
 		game.load.tilemap('map', 'images/nivel1.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 1
+		game.load.tilemap('map2', 'images/nivel2.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 2
+		game.load.tilemap('map3', 'images/nivel3.json', null, Phaser.Tilemap.TILED_JSON);//mapa del nivel 3
 		game.load.spritesheet('princesa', 'images/peachAnim.png', 92, 45, 5);//sprite de la princesa
 		game.load.spritesheet('DK', 'images/DKAnim.png', 96, 72, 14)
 		game.load.spritesheet('drumOil', 'images/oilDrum.png', 30, 57, 2);
 		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 9);//barril
 		game.load.spritesheet('barrilAzul', 'images/BarrilAzul.png', 30, 20, 6);//barril azul
 		game.load.spritesheet('Flama', 'images/llamaAnim.png', 32, 32, 8);//Flama
+		game.load.spritesheet('Flama2', 'images/llamaAnim2.png', 32, 28, 8);//Flama
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 96, 52, 21);//mario
 		game.load.image('youWin', 'images/youWin.png');//has ganado
 		game.load.image('gameOver', 'images/gameOver.png');//has perdido
