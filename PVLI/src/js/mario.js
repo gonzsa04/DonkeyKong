@@ -141,7 +141,7 @@ class Mario extends GameObject{
     //mira si ha chocado con el suelo y hace la accion correspondiente
     tocaSuelo(self){
         //si toca el suelo
-        if(this._gameObject.body.onFloor()){
+        if(this._gameObject.body.onFloor() || this._gameObject.body.touching.down){
             this._saltado = false;
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
             if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);

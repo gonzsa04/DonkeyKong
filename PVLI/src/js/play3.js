@@ -47,12 +47,11 @@ var playScene3={
         //DECORADO
 
         //TEXTO
-        this.score = 0;//puntuacion actual
         this.bonus = 7000;//puntuacion de bonus
         this.contB = 0;//contador de bonus
         this.textCont = 0;//contador de texto emergente cuando saltas un barril
         this.text = game.add.bitmapText(0, 0, 'gem', "", 12);//texto de puntuacion al saltar barriles
-        this.scoreText = game.add.bitmapText(100, 6, 'gem', this.score.toString(), 20);//texto de puntuacion
+        this.scoreText = game.add.bitmapText(100, 6, 'gem', game.score.toString(), 20);//texto de puntuacion
         this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);//texto de maxima puntuacion
         this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);//texto de bonus
         
@@ -134,13 +133,18 @@ var playScene3={
         if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
         //si mario choca con DK muere
         if(game.physics.arcade.overlap(this.mario.gameObject, this.DK)) this.mario.morirAnim(this);
+        
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
             //si una flama ha colisionado con una escalera decide si subir o no
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
-            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)) this.mario.morirAnim(this);//muere y pierde una vida
+            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
+                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(game.score, this);//si lleva martillo la mata
+                else this.mario.morirAnim(this);//si no muere y pierde una vida
+            }
         }
     },
     //-----------------------------------------------------------------------------------------------------------------------
@@ -152,10 +156,10 @@ var playScene3={
         var posx = 15;
         var posy = 30;//pintamos las vidas que le quedan a mario
         for (var i = 0; i < game.vidas; i++) game.add.image(posx+i*14, posy, 'decoVidas');
-        this.scoreText.text = this.score.toString();//escribimos la puntuacion
+        this.scoreText.text = game.score.toString();//escribimos la puntuacion
         //si la puntuacion es mayor que la puntuacion maxima, actualizamos la maxima
-        if(this.score > game.highScore){
-            game.highScore = this.score;
+        if(game.score > game.highScore){
+            game.highScore = game.score;
             this.highScoreText.text = game.highScore.toString();
         } 
     },
@@ -194,6 +198,11 @@ var playScene3={
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
 
+    //hace al martillo con el que ha chocado mario desaparecer
+    recogeMartillo: function(mario, martillo){
+        martillo.kill();
+    },
+
     GeneraObjetos: function(numRand, cont){
             if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
             if(this.countF >= this.randF){//si el contador llega al random
@@ -231,18 +240,17 @@ var playScene3={
     },
 
     //llamado cuando la princesa deja de hacer la animacion de haber sido rescatada
-    ganar: function(){game.state.start('howHigh');},
+    ganar: function(){game.state.start('ganar');},
 
     //metodo llamado cuando ganamos (true) o perdemos (false)
     fin: function(ganar){
         //eliminamos a mario y a los barriles
-        this.score += this.bonus;
+        game.score += this.bonus;
         this.bonus = 0;
         this.mario.morir();
         for(var i = 0;i<this.flamas.length; i++)this.flamas[i].morir();
         //llamamos al menu de ganar o perder
         if(ganar){
-            game.nivel++;
             this.princesa.animations.play('ganar');
             this.princesa.animations.currentAnim.onComplete.add(this.ganar, this);//cuando termine
         }
