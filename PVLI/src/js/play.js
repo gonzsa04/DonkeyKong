@@ -172,7 +172,7 @@ var playScene={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(game.score, this);//si lleva martillo la mata
+                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this);//si lleva martillo la mata
                 else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
@@ -185,7 +185,7 @@ var playScene={
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
                 //si mario colisiona con la parte baja del barril
                 if(this.mario.y > this.barriles[i].y - this.barriles[i].gameObject.height/2){
-                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(game.score, this);//si lleva un martillo lo mata
+                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(this);//si lleva un martillo lo mata
                     else this.mario.morirAnim(this);//si no muere y pierde una vida
                 }
                 //si mario esta por encima del barril y no ha saltado ningun barril y no esta muerto y no lleva martillo

@@ -104,12 +104,12 @@ class Barril extends GameObject{
     noDecidido(){ this._baja = -1; }
 
     //llamado al ser aplastado por un martillo
-    aplastado(score, self){
+    aplastado(self){
         if(!this._muerto){
             this._muerto = true;
             this._vel = 0;
             this._gameObject.body.velocity.x = this._gameObject.body.velocity.y = 0;
-            self.score+=200;
+            game.score+=200;
             self.hudSpawn(200);
             this._anim.play('aplastado');
             this._anim.currentAnim.onComplete.add(this.morir, this);

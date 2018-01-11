@@ -1,6 +1,7 @@
 //estado play
 var playScene3={
     create: function(){
+        this.i = 0;
         this.cursors = game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
 
@@ -51,14 +52,14 @@ var playScene3={
         //PLATAFORMAS QUE CAEN
         this.plats=game.add.physicsGroup();
         game.physics.arcade.enable(this.plats);
-        this.plat1 = this.plats.create(155, 170, 'plataforma3');
-        this.plat2 = this.plats.create(155, 280, 'plataforma3');
-        this.plat3 = this.plats.create(155, 385, 'plataforma3');
-        this.plat4 = this.plats.create(155, 480, 'plataforma3');
-        this.plat5 = this.plats.create(420, 170, 'plataforma3');
-        this.plat6 = this.plats.create(420, 280, 'plataforma3');
-        this.plat7 = this.plats.create(420, 385, 'plataforma3');
-        this.plat8 = this.plats.create(420, 480, 'plataforma3');
+        this.plat1 = this.plats.create(168, 168, 'plataforma3');
+        this.plat2 = this.plats.create(168, 278, 'plataforma3');
+        this.plat3 = this.plats.create(168, 382, 'plataforma3');
+        this.plat4 = this.plats.create(168, 478, 'plataforma3');
+        this.plat5 = this.plats.create(432, 168, 'plataforma3');
+        this.plat6 = this.plats.create(432, 278, 'plataforma3');
+        this.plat7 = this.plats.create(432, 382, 'plataforma3');
+        this.plat8 = this.plats.create(432, 478, 'plataforma3');
         this.plats.forEach(function(child) {
             game.physics.arcade.enable(child);
             child.body.gravity.y = 0;
@@ -156,7 +157,7 @@ var playScene3={
 
         if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
 
-        game.physics.arcade.collide(this.mario.gameObject, this.plats, this.caete, null, this)
+        game.physics.arcade.overlap(this.mario.gameObject, this.plats, this.caete, null, this)
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
@@ -164,7 +165,7 @@ var playScene3={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(game.score, this);//si lleva martillo la mata
+                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this);//si lleva martillo la mata
                 else this.mario.morirAnim(this);//si no muere y pierde una vida
             }
         }
@@ -226,9 +227,10 @@ var playScene3={
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
     platCaidasUpdate:function(){
         this.todasCaidas = true;
-        game.physics.arcade.collide(this.mario.gameObject, this.plats);
         this.plats.forEach(function(child) {
-            if(child.y >= game.height)child.kill();
+            if(child.y >= game.height){
+                child.kill();
+            }
             if(child.alive) this.todasCaidas = false;
         }, this);
         if(this.todasCaidas)this.fin(true);
