@@ -109,7 +109,7 @@ class Flama extends GameObject{
             //la Flama colisiona con las plataformas si no puede atravesarlas
             if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
             if(!this._subiendo){
-                game.physics.arcade.collide(this._gameObject, collidersF);
+                game.physics.arcade.collide(this._gameObject, collidersF)
                 if(game.physics.arcade.distanceToXY(this._gameObject, mario.x, mario.y) <= this._rango)this.DentroDeRango(mario);
                 else this.FueraDeRango(mario);
                 this._gameObject.body.velocity.y=0;
