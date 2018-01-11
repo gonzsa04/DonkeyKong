@@ -163,7 +163,7 @@ class Flama extends GameObject{
             if(!this._muerto){
                 this._muerto = true;
                 this._gameObject.body.velocity.x =  this._gameObject.body.velocity.y = 0;
-                self.score+=300;
+                game.score+=300;
                 self.hudSpawn(300);
                 this._vel = 0;
                 this._anim.play('aplastado');

@@ -212,6 +212,7 @@ class Mario extends GameObject{
     morirAnim(self){
         if(!this._muerto){
             game.vidas--;
+            game.score = 0;
             this._anim.play('morir');//mueres
             this._muerto = true;
             this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js

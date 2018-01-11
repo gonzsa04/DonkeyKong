@@ -25,7 +25,6 @@ var howHighScene = {
             if(game.nivel == 1)game.state.start('play');//se inicia el estado 'play'
             else if(game.nivel == 2)game.state.start('play2');
             else if(game.nivel == 3)game.state.start('play3');
-            else if(game.nivel == 4)game.state.start('ganar');
         }
     }
 }

@@ -4,12 +4,6 @@ var playScene3={
         this.cursors = game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
 
-        this.map=game.add.tilemap('map3');
-        this.map.addTilesetImage('plataforma2');
-        this.collidersF=this.map.createLayer('CollidersF');
-        this.map.setCollisionBetween(1, 300, true, this.collidersF);
-        this.collidersF.resizeWorld();
-
         //ESCALERAS
         //metemos todas las escaleras en un mismo grupo,
         this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
@@ -38,17 +32,33 @@ var playScene3={
 
         //MAPA
         game.add.image(0, 0, 'hud');
+        this.map=game.add.tilemap('map3');
+        this.map.addTilesetImage('plataforma2');
+        this.collidersF=this.map.createLayer('CollidersF');
+        this.map.setCollisionBetween(1, 300, true, this.collidersF);
+        this.collidersF.resizeWorld();
         //cargamos un mapa de tiled con las plataformas del nivel1
         this.plataformas=this.map.createLayer('Plataformas');
         this.map.setCollisionBetween(1, 300, true, this.plataformas);
         this.plataformas.resizeWorld();
         
-
         //DECORADO
         this.decoScore = game.add.physicsGroup();
         this.decoScore1 = this.decoScore.create(100, 140, 'decoScore', 1);
         this.decoScore2 = this.decoScore.create(200, 353, 'decoScore', 0);
         this.decoScore3 = this.decoScore.create(450, 353, 'decoScore', 2);
+
+        //PLATAFORMAS QUE CAEN
+        this.plats=[];
+        this.plats.push(new platFall(155, 170, 'plataforma3'));
+        this.plats.push(new platFall(155, 280, 'plataforma3'));
+        this.plats.push(new platFall(155, 385, 'plataforma3'));
+        this.plats.push(new platFall(155, 480, 'plataforma3'));
+        this.plats.push(new platFall(420, 170, 'plataforma3'));
+        this.plats.push(new platFall(420, 280, 'plataforma3'));
+        this.plats.push(new platFall(420, 385, 'plataforma3'));
+        this.plats.push(new platFall(420, 480, 'plataforma3'));
+        this.todasCaidas = true;
 
         //TEXTO
         this.bonus = 7000;//puntuacion de bonus
@@ -75,9 +85,9 @@ var playScene3={
         game.physics.arcade.enable(this.DK);
 
        //FLAMAS 
-       this.numFlamas = 3;//maximo de flamas que va a haber en pantalla
-       this.frecuenciaFlamas = 40;//los flamas apareceran en un random entre 0 y esta variable
-       this.posFlax = 80; this.posFlay = 580;//posicion inicial de las llamas
+       this.numFlamas = 5;//maximo de flamas que va a haber en pantalla
+       this.frecuenciaFlamas = 10;//los flamas apareceran en un random entre 0 y esta variable
+       this.posFlax = 50; this.posFlay = 380;//posicion inicial de las llamas
        this.flamas=[];//array de flamas, inicialmente todos inexistentes
        for(var i=0;i<this.numFlamas;i++){
            this.flamas.push(new Flama (this.posFlax, this.posFlay, 'Flama2', 125));
@@ -103,6 +113,14 @@ var playScene3={
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
         //game.debug.body(this.escalera11);//vemos en pantalla el collider de x gameobject (debug)
+        this.todasCaidas = true;
+        for(var i = 0; i < this.plats.length; i++) {
+            if(this.plats[i].estaVivo()) {
+                game.physics.arcade.collide(this.mario.gameObject, this.plats[i].gameObject);
+                this.todasCaidas = false;
+            }
+        }
+        if(this.todasCaidas)this.fin(true);
         this.mario.update(this.plataformas, this);//llamamos al update de mario
         for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.plataformas, this, this.mario, this.collidersF);//update de cada llama en la escena
         this.teclas();//llamamos al gestor del input
@@ -133,14 +151,20 @@ var playScene3={
     colisiones: function(){
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.gameObject, this.escaleras, this.PuedeSubir, null, this)) this.mario.noPuedeSubir();
-        //si mario llega hasta la princesa gana (true)
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
         //si mario choca con DK muere
         if(game.physics.arcade.overlap(this.mario.gameObject, this.DK)) this.mario.morirAnim(this);
         
         if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
         if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
+
+        for(var i = 0; i < this.plats.length; i++){
+            if(game.physics.arcade.collide(this.mario.gameObject, this.plats[i].gameObject)) {
+                this.plats[i].cae();
+                game.score+=100;
+                this.hudSpawn(100);
+            }
+        }
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
@@ -208,7 +232,6 @@ var playScene3={
 
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
-
     //hace al martillo con el que ha chocado mario desaparecer
     recogeMartillo: function(mario, martillo){
         martillo.kill();
@@ -217,6 +240,17 @@ var playScene3={
     GeneraObjetos: function(numRand, cont){
             if(this.countF == 0) this.randF = Math.random()*numRand + 10;//generamos un random entre 0 y numRand
             if(this.countF >= this.randF){//si el contador llega al random
+                this.DKreset(this.flamas);
+        }
+    },
+
+    DKreset: function (objeto){
+        var i = 0;
+        while(i<objeto.length && objeto[i].estaVivo())i++;//se busca el primer objeto inexistente
+        if(i<objeto.length) {
+            this.flamas[i].flamaSpawn(this.posFlax, this.posFlay);//lo spawneamos
+            this.countF=0;//se reinicia el contador y se vuelve a hacer un random
+            this.randF = Math.random()*this.frecuenciaFlamas + 3;
         }
     },
 
@@ -237,6 +271,7 @@ var playScene3={
     //suma cada segundo uno al contador
     actualizaContador: function(){ 
         this.countF++;//contadores
+        this.GeneraObjetos(this.frecuenciaFlamas, this.countF);//genera las llamas aleatoriamente
         this.actualizaTexto();//actualizamos los textos que salen al saltar sobre un barril
         this.actualizaBonus();//actualizamos el bonus
     },

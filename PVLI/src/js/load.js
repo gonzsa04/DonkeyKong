@@ -15,6 +15,7 @@ var loadScene={
 		game.load.image('plataforma', 'images/plataforma.png');//sprite de la plataforma
 		game.load.image('Plataforma', 'images/plataforma1.png');//sprite de la plataforma
 		game.load.image('plataforma2', 'images/plataforma2.png');//sprite de la plataforma
+		game.load.image('plataforma3', 'images/plataformalvl3.png');//sprite de la plataforma del nivel 3
 		game.load.image('escaleras', 'images/escaleras.png');//sprite de las escaleras
 		game.load.image('escalerasA', 'images/escalerasA.png');//sprite de las escaleras
 		game.load.image('escalerasG', 'images/escalerasG.png');//sprite de las escaleras
@@ -40,6 +41,7 @@ var loadScene={
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 98, 52, 21);//mario
 		game.load.image('youWin', 'images/youWin.png');//has ganado
 		game.load.image('gameOver', 'images/gameOver.png');//has perdido
+		//game.load.video('intro', 'images/IntroRec.mp4');//intro de donkey kong
 	},
 	//create es como Start en Unity
 	create:function(){
