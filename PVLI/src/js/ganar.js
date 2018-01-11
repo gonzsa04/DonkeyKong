@@ -1,6 +1,9 @@
 //estado ganar
 var ganarScene={
     create:function(){
+        game.vidas = 3;
+        game.score = 0;
+        game.nivel = 1;
         var youWin = game.add.sprite(100, 250, 'youWin');
         youWin.x = game.width/2 - youWin.width/2;
         youWin.y = game.height/2 - youWin.height/2;

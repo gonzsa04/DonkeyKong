@@ -3,11 +3,11 @@ class Mario extends GameObject{
 
     //--------------------------------------CONSTRUCTORA-------------------------------------
     //constructora de Mario
-    constructor(x, y, nombre){
+    constructor(x, y, nombre, limitIzq, limitDrch){
         super(x, y, nombre);//llama a constructora de GamObject
         this._jump=true;//indica si mario puede saltar
-        this._limiteIzq = 70;//limites del mapa
-        this._limiteDrcha = 530;
+        this._limiteIzq = limitIzq;//limites del mapa
+        this._limiteDrcha = limitDrch;
         this._yProv = 600;//variable donde guardamos la altura provisional
         this._alturaCaida = 50;//altura maxima desde la que caer   
         this._volando = false;//indica si esta en el aire o no
@@ -15,13 +15,13 @@ class Mario extends GameObject{
         this._subiendo=false;//indica si mario esta subiendo escaleras
         this._inmovil=false;//indica si mario puede moverse en el eje x
         this._alturaSalto=-150;//altura a la que salta mario
-        this._saltado = false;
+        this._saltado = false;//indica si ha saltado un barril
         this._velMax = 125;//velocidad a la que sube las rampas
         this._velMin = 75;//velocidad normal a la que camina
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._parado = true;//indica si mario esta parado
         this._martillo = false;//indica si mario ha cogido un martillo
-        this._maxTimeMartillo = 20;//tiempo maximo que puedes permanecer con el martillo
+        this._maxTimeMartillo = 15;//tiempo maximo que puedes permanecer con el martillo
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
@@ -141,7 +141,7 @@ class Mario extends GameObject{
     //mira si ha chocado con el suelo y hace la accion correspondiente
     tocaSuelo(self){
         //si toca el suelo
-        if(this._gameObject.body.onFloor()){
+        if(this._gameObject.body.onFloor() || this._gameObject.body.touching.down){
             this._saltado = false;
             //si es una pared (rampas) aumentamos la velocidad para que pueda subirlas
             if(this._alturaCaida < this.y - this._yProv)this.morirAnim(self);
@@ -212,16 +212,18 @@ class Mario extends GameObject{
     morirAnim(self){
         if(!this._muerto){
             game.vidas--;
+            game.score = 0;
             this._anim.play('morir');//mueres
             this._muerto = true;
             this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
         }
     }
 
-    haSaltado(){
-        this._saltado = true;
-    }
-    get muerto(){ return this._muerto; }
+    //indica que mario ha saltado un barril
+    haSaltado(){ this._saltado = true; }
+    //devuelve si mario ha saltado un barril
     get saltado(){ return this._saltado; }
+    //devuelve si mario ha muerto
+    get muerto(){ return this._muerto; }
     //-----------------------------------------------------------------------
 }
