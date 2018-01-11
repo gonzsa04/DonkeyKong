@@ -49,15 +49,20 @@ var playScene3={
         this.decoScore3 = this.decoScore.create(450, 353, 'decoScore', 2);
 
         //PLATAFORMAS QUE CAEN
-        this.plats=[];
-        this.plats.push(new platFall(155, 170, 'plataforma3'));
-        this.plats.push(new platFall(155, 280, 'plataforma3'));
-        this.plats.push(new platFall(155, 385, 'plataforma3'));
-        this.plats.push(new platFall(155, 480, 'plataforma3'));
-        this.plats.push(new platFall(420, 170, 'plataforma3'));
-        this.plats.push(new platFall(420, 280, 'plataforma3'));
-        this.plats.push(new platFall(420, 385, 'plataforma3'));
-        this.plats.push(new platFall(420, 480, 'plataforma3'));
+        this.plats=game.add.physicsGroup();
+        game.physics.arcade.enable(this.plats);
+        this.plat1 = this.plats.create(155, 170, 'plataforma3');
+        this.plat2 = this.plats.create(155, 280, 'plataforma3');
+        this.plat3 = this.plats.create(155, 385, 'plataforma3');
+        this.plat4 = this.plats.create(155, 480, 'plataforma3');
+        this.plat5 = this.plats.create(420, 170, 'plataforma3');
+        this.plat6 = this.plats.create(420, 280, 'plataforma3');
+        this.plat7 = this.plats.create(420, 385, 'plataforma3');
+        this.plat8 = this.plats.create(420, 480, 'plataforma3');
+        this.plats.forEach(function(child) {
+            game.physics.arcade.enable(child);
+            child.body.gravity.y = 0;
+        }, this);
         this.todasCaidas = true;
 
         //TEXTO
@@ -113,14 +118,7 @@ var playScene3={
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
         //game.debug.body(this.escalera11);//vemos en pantalla el collider de x gameobject (debug)
-        this.todasCaidas = true;
-        for(var i = 0; i < this.plats.length; i++) {
-            if(this.plats[i].estaVivo()) {
-                game.physics.arcade.collide(this.mario.gameObject, this.plats[i].gameObject);
-                this.todasCaidas = false;
-            }
-        }
-        if(this.todasCaidas)this.fin(true);
+        this.platCaidasUpdate();
         this.mario.update(this.plataformas, this);//llamamos al update de mario
         for(var i = 0; i < this.flamas.length; i++) this.flamas[i].update(this.plataformas, this, this.mario, this.collidersF);//update de cada llama en la escena
         this.teclas();//llamamos al gestor del input
@@ -158,13 +156,7 @@ var playScene3={
 
         if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
 
-        for(var i = 0; i < this.plats.length; i++){
-            if(game.physics.arcade.collide(this.mario.gameObject, this.plats[i].gameObject)) {
-                this.plats[i].cae();
-                game.score+=100;
-                this.hudSpawn(100);
-            }
-        }
+        game.physics.arcade.collide(this.mario.gameObject, this.plats, this.caete, null, this)
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
@@ -232,6 +224,23 @@ var playScene3={
 
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
+    platCaidasUpdate:function(){
+        this.todasCaidas = true;
+        game.physics.arcade.collide(this.mario.gameObject, this.plats);
+        this.plats.forEach(function(child) {
+            if(child.y >= game.height)child.kill();
+            if(child.alive) this.todasCaidas = false;
+        }, this);
+        if(this.todasCaidas)this.fin(true);
+    },
+    
+    //llamado cuando mario las pisa
+    caete:function(mario, plat){
+        plat.body.gravity.y = 150;
+        game.score+=100;
+        this.hudSpawn(100);
+    },
+
     //hace al martillo con el que ha chocado mario desaparecer
     recogeMartillo: function(mario, martillo){
         martillo.kill();
