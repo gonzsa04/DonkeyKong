@@ -17,8 +17,8 @@ var playScene3={
         this.escalera2=this.escaleras.create(291, 479, 'escalerasA');
         this.escalera3=this.escaleras.create(558, 479, 'escalerasA');
         this.escalera4=this.escaleras.create(60, 383, 'escalerasA');
-        this.escalera5=this.escaleras.create(330, 383, 'escalerasA');
-        this.escalera6=this.escaleras.create(252, 383, 'escalerasA');
+        this.escalera5=this.escaleras.create(370, 383, 'escalerasA');
+        this.escalera6=this.escaleras.create(212, 383, 'escalerasA');
         this.escalera7=this.escaleras.create(528, 383, 'escalerasA');
         this.escalera8=this.escaleras.create(95, 279, 'escalerasA');
         this.escalera8.scale.setTo(1,1.1);
@@ -28,9 +28,9 @@ var playScene3={
         this.escalera10.scale.setTo(1,1.1);
         this.escalera11=this.escaleras.create(130, 169, 'escalerasA');
         this.escalera11.scale.setTo(1,1.11);
-        this.escalera12=this.escaleras.create(330, 169, 'escalerasA');
+        this.escalera12=this.escaleras.create(370, 169, 'escalerasA');
         this.escalera12.scale.setTo(1,1.11);
-        this.escalera13=this.escaleras.create(252, 169, 'escalerasA');
+        this.escalera13=this.escaleras.create(212, 169, 'escalerasA');
         this.escalera13.scale.setTo(1,1.11);
         this.escalera14=this.escaleras.create(460, 169, 'escalerasA');
         this.escalera14.scale.setTo(1,1.11);
@@ -45,6 +45,10 @@ var playScene3={
         
 
         //DECORADO
+        this.decoScore = game.add.physicsGroup();
+        this.decoScore1 = this.decoScore.create(100, 140, 'decoScore', 1);
+        this.decoScore2 = this.decoScore.create(200, 353, 'decoScore', 0);
+        this.decoScore3 = this.decoScore.create(450, 353, 'decoScore', 2);
 
         //TEXTO
         this.bonus = 7000;//puntuacion de bonus
@@ -57,7 +61,7 @@ var playScene3={
         
         //PRINCESA
         //princesa a la que rescatar
-        this.princesa=game.add.sprite(214, 102, 'princesa');
+        this.princesa=game.add.sprite(201, 60, 'princesa');
         this.princesa.animations.add('normal', [0,1,0,1,0,1,2,2,2], 6, true);
         this.princesa.animations.add('ganar', [3,4], 1, false);
         this.princesa.animations.play('normal');
@@ -136,6 +140,8 @@ var playScene3={
         
         if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
+
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
             //si una flama ha colisionado con una escalera decide si subir o no
@@ -162,6 +168,11 @@ var playScene3={
             game.highScore = game.score;
             this.highScoreText.text = game.highScore.toString();
         } 
+    },
+
+    destruir: function(mario, deco){
+        deco.kill();
+        game.score+=1000;
     },
 
     //suma cada segundo uno al contador de bonus, y actualiza este si fuera necesario

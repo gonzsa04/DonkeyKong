@@ -43,30 +43,26 @@ var playScene2={
         game.add.image(195, 40, 'decoEscaleras');
         game.add.image(136, 171, 'decoMovil');
         game.add.image(316, 171, 'decoMovil');
+        this.decoScore = game.add.physicsGroup();
+        this.decoScore1 = this.decoScore.create(0, 250, 'decoScore', 1);
+        this.decoScore2 = this.decoScore.create(570, 193, 'decoScore', 0);
 
         //PLATAFORMAS MOVILES
-        /*this.numPlats = 3;//maximo de flamas que va a haber en pantalla
-        this.frecuenciaPlats = 40;//los flamas apareceran en un random entre 0 y esta variable
-        this.posPlax = 140; this.posPlay = 550;//posicion inicial de las llamas
-        this.platsArriba=[];//array de flamas, inicialmente todos inexistentes
-        for(var i=0;i<this.numPlats;i++){
-            this.platsArriba.push(game.add.sprite(140, 550, 'plataforma'));
-            this.platsArriba[i].kill();
-        }
-        this.countF = 1;
-        this.randF = 2;
-        this.GeneraObjetos(this.frecuenciaFlamas, this.countF);//genera las llamas aleatoriamente
-        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo*/
-        this.platMov = game.add.sprite(140, 550, 'plataforma');
-        game.physics.arcade.enable(this.platMov);
-        this.platMov.body.immovable = true;
-
+        this.velP = 40;
+        this.plats=[];//array de plataformas, inicialmente todas inexistentes
+        this.plats.push(new platMovil(140, 535, 'Plataforma', -this.velP, 140, 535));
+        this.plats.push(new platMovil(320, 210, 'Plataforma', this.velP, 320, 210));
+        this.plats.push(new platMovil(140, 375, 'Plataforma', -this.velP, 140, 540));
+        this.plats.push(new platMovil(320, 380, 'Plataforma', this.velP, 320, 210));
         //TEXTO
         this.bonus = 6000;//puntuacion de bonus
         this.contB = 0;//contador de bonus
+        this.textCont = 0;//contador de texto emergente 
+        this.text = game.add.bitmapText(0, 0, 'gem', "", 12);//texto al ganar puntuacion 
         this.scoreText = game.add.bitmapText(100, 6, 'gem', game.score.toString(), 20);//texto de puntuacion
         this.highScoreText = game.add.bitmapText(450, 25, 'gem', game.highScore.toString(), 20);//texto de maxima puntuacion
         this.bonusText = game.add.bitmapText(537, 118, 'gem', this.bonus.toString(), 16);//texto de bonus
+        game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
         
         //PRINCESA
         //princesa a la que rescatar
@@ -99,13 +95,16 @@ var playScene2={
 
     //------------------------------------------BUCLE PRINCIPAL-----------------------------------------------------------
     update: function(){
-        //game.debug.body(this.escalera3);//vemos en pantalla el collider de x gameobject (debug)
-        this.plataformasMoviles();
+        //game.debug.body(this.mario.gameObject);//vemos en pantalla el collider de x gameobject (debug)ts[i].update();
+        for(var i = 0; i < this.plats.length; i++){
+            game.physics.arcade.collide(this.mario.gameObject, this.plats[i].gameObject);
+            this.plats[i].update();//update de cada llama en la escena
+        }
         this.mario.update(this.plataformas, this);//llamamos al update de mario
         for(var i = 0; i < this.flamas.length; i++)
             this.flamas[i].update(this.plataformas, this, this.mario, this.collidersF);//update de cada llama en la escena
-        this.colisiones();//comprobamos las colisiones
         this.teclas();//llamamos al gestor del input
+        this.colisiones();//comprobamos las colisiones
         this.renderHud();//pintamos el hud
     },
 
@@ -137,6 +136,8 @@ var playScene2={
         //si mario choca con DK muere
         if(game.physics.arcade.overlap(this.mario.gameObject, this.DK) || game.physics.arcade.overlap(this.mario.gameObject, this.deadZone)) 
         this.mario.morirAnim(this);
+        //si colisiona con una decoScore la destruye y suma puntos
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
             //si una flama ha colisionado con una escalera decide si subir o no
@@ -144,6 +145,10 @@ var playScene2={
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)) this.mario.morirAnim(this);//muere y pierde una vida
         }
+
+        for(var i = 0; i < this.plats.length; i++)
+            //si una plataforma ha colisionado con una deadzone muere
+            if(game.physics.arcade.overlap(this.deadZone, this.plats[i].gameObject)) this.plats[i].morir();
     },
     //-----------------------------------------------------------------------------------------------------------------------
 
@@ -162,6 +167,11 @@ var playScene2={
         } 
     },
 
+    destruir: function(mario, deco){
+        deco.kill();
+        game.score+=1000;
+    },
+
     //suma cada segundo uno al contador de bonus, y actualiza este si fuera necesario
     actualizaBonus: function(){
         this.contB++;//si han pasado 4 segundos y bonus sigue siendo mayor que 0
@@ -170,6 +180,17 @@ var playScene2={
             this.bonus-=100;//se resta 100 al bonus y se escribe
             this.bonusText.text = this.bonus.toString();
         }
+    },
+
+    actualizaTexto: function(){
+        if(this.text.text != ""){
+            this.textCont++;
+            this.text.y-=5;//si hay un texto activo va subiendo en la y durante tres segundos
+            if(this.textCont >= 3){
+                this.textB = false;
+                this.text.text = "";//despues desaparece
+            }
+        } 
     },
 
     //escribe en la posicion de mario una puntuacion dada (llamado cuando salta barriles)
@@ -183,11 +204,6 @@ var playScene2={
 
 
     //-------------------------------------------------AUXILIARES------------------------------------------------------------
-
-    plataformasMoviles: function(){
-        this.platMov.body.velocity.y = -50;
-        game.physics.arcade.collide(this.mario.gameObject, this.platMov);
-    },
 
     PuedeEscalarF: function(flama, escalera){
         var i = 0;
@@ -205,7 +221,7 @@ var playScene2={
 
     //suma cada segundo uno al contador
     actualizaContador: function(){ 
-        this.actualizaTexto();//actualizamos los textos que salen al saltar sobre un barril
+        this.actualizaTexto();//actualizamos los textos que salen al ganar puntuacion
         this.actualizaBonus();//actualizamos el bonus
     },
 
