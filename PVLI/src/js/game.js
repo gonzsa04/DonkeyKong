@@ -1,7 +1,7 @@
 var game = new Phaser.Game(600, 600, Phaser.AUTO, 'gameDiv');//variable del juego, con una ventana de 600x600
 game.vidas = 3;//vidas de mario
 game.highScore = 0;//puntuacion maxima
-game.nivel = 3;//nivel en el que estamos
+game.nivel = 1;//nivel en el que estamos
 game.score = 0;//puntuacion actual
 
 //añadimos los estados
