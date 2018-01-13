@@ -28,7 +28,7 @@ class Mario extends GameObject{
 
         ///AUDIO
         this.musicaSaltar = game.add.audio('musicaSalto');
-        this.musicaAndar = game.add.audio('musicaAndar', 4, true);
+        this.musicaAndar = game.add.audio('musicaAndar', 1, true);
         this.musicaMuerte = game.add.audio('musicaMuerte');
         this.musicaMartillo = game.add.audio('musicaMartillo', 4);
 

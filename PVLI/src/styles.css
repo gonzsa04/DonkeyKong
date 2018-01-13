@@ -1,30 +1,46 @@
-html {
-  font-size: 10px;
-  -webkit-font-smoothing: antialiased;
-}
-
 body {
+  text-align: center;
   padding: 0;
   margin: 0;
   font-family: Courier, 'Courier New', monospace;
   font-size: 1.6rem;
-  background: #fff;
-  color: #000;
+  background: url(images/FondoWeb.png);
+  background-attachment: fixed;
+  color: #fff;
 }
 
-a {
-  color: #c39;
+.abajo{
+  border-radius: 15%;
+  width: 300px;
+  height: 300px;
+  padding: 0px;
+  box-shadow: 5px 5px 0px #5c5c5c;
 }
 
-main {
-  margin: 2rem 0;
+a{
+  color: aqua;
+}
+
+.github{
   text-align: center;
+  position: fixed;
+  bottom: 2%;
+  margin: auto;
 }
 
-#game {
-  border: 1px solid #333;
+.padre{
+  font-size: 1rem;
+  position: relative;
+  border-top: 125px solid rgba(0, 0, 0, 0);
+  margin: auto;
+  width: 70%;
+  height: 1500px;
+  background: rgba(0, 0, 0, .75);
 }
 
-footer {
-  text-align: center;
+.juego{
+  position: relative;
+
+  width: 600px;
+  margin:auto; 
 }
