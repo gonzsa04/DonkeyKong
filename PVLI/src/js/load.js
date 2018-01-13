@@ -3,7 +3,6 @@ var loadScene={
 	//preload es como awake en Unity, es usado para cargar assets normalmente
 	preload:function(){
 		//informamos de que esta cargando
-		game.load.spritesheet('barril', 'images/Barril.png', 30, 20, 9);//barril
 		this.cargando = game.add.sprite(270, 280, 'barril');
         this.cargando.animations.add('rotate', [0,1, 2, 3], 8, true);
         this.cargando.animations.play('rotate');
