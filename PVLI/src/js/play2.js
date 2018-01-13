@@ -13,6 +13,12 @@ var playScene2={
         this.map.setCollisionBetween(1, 300, true, this.deadZone);
         this.deadZone.resizeWorld();
 
+        //MUSICA
+        //efectos de sonido y musica de fondo
+        this.musicaItem = game.add.audio('musicaItem');
+        this.musicaFondo = game.add.audio('musicaFondo', 3, true);
+        this.musicaFondo.play();
+
         //ESCALERAS
         //metemos todas las escaleras en un mismo grupo,
         this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
@@ -132,18 +138,27 @@ var playScene2={
         //si mario esta sobre una escalera, llama al metodo PuedeSubir (callback). Si no, llama a noPuedeSubir de mario
         if(!game.physics.arcade.overlap(this.mario.gameObject, this.escaleras, this.PuedeSubir, null, this)) this.mario.noPuedeSubir();
         //si mario llega hasta la princesa gana (true)
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)){
+            this.musicaFondo.stop();
+            this.fin(true);
+        }
         //si mario choca con DK muere
         if(game.physics.arcade.overlap(this.mario.gameObject, this.DK) || game.physics.arcade.overlap(this.mario.gameObject, this.deadZone)) 
         this.mario.morirAnim(this);
         //si colisiona con una decoScore la destruye y suma puntos
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)){
+            this.musicaItem.play();
+            this.hudSpawn(1000);
+        }
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
             //si una flama ha colisionado con una escalera decide si subir o no
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
-            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)) this.mario.morirAnim(this);//muere y pierde una vida
+            if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)) {
+                this.musicaFondo.stop();
+                this.mario.morirAnim(this);//si no muere y pierde una vida
+            }
         }
 
         for(var i = 0; i < this.plats.length; i++)

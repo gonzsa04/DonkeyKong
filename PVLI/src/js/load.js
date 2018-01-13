@@ -51,6 +51,7 @@ var loadScene={
 		game.load.audio('musicaGanar', 'audio/win1.ogg');
 		game.load.audio('musicaItem', 'audio/itemget.ogg');
 		game.load.audio('musicaHowHigh', 'audio/howhigh.ogg');
+		game.load.audio('musicaFondo', 'audio/DonkeyKongBackgroundMusic.ogg');
 	},
 	//create es como Start en Unity
 	create:function(){

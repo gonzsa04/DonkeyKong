@@ -4,6 +4,13 @@ var playScene={
         this.cursors = game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
 
+        //MUSICA
+        //efectos sonoros y musica de fondo
+        this.musicaHammerKill = game.add.audio('musicaMartilloAplastar');
+        this.musicaSaltaBarril = game.add.audio('musicaSaltarBarril');
+        this.musicaFondo = game.add.audio('musicaFondo', 3, true);
+        this.musicaFondo.play();
+
         //ESCALERAS
         //metemos todas las escaleras en un mismo grupo,
         this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
@@ -160,7 +167,10 @@ var playScene={
             }
         }
         //si mario llega hasta la princesa gana (true)
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)) this.fin(true);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.princesa)){
+            this.musicaFondo.stop();
+            this.fin(true);
+        }
         //si mario choca con DK muere
         if(game.physics.arcade.overlap(this.mario.gameObject, this.DK)) this.mario.morirAnim(this);
         //si mario colisiona con un martillo lo coge
@@ -172,8 +182,14 @@ var playScene={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this);//si lleva martillo la mata
-                else this.mario.morirAnim(this);//si no muere y pierde una vida
+                if(this.mario.llevaMartillo()) {
+                    if(!this.musicaHammerKill.isPlaying) this.musicaHammerKill.play();
+                    this.flamas[i].aplastado(this);//si lleva martillo la mata
+                }
+                else {
+                    this.musicaFondo.stop();
+                    this.mario.morirAnim(this);//si no muere y pierde una vida
+                }
             }
         }
 
@@ -185,12 +201,19 @@ var playScene={
             if(game.physics.arcade.overlap(this.mario.gameObject, this.barriles[i].gameObject)){
                 //si mario colisiona con la parte baja del barril
                 if(this.mario.y > this.barriles[i].y - this.barriles[i].gameObject.height/2){
-                    if(this.mario.llevaMartillo()) this.barriles[i].aplastado(this);//si lleva un martillo lo mata
-                    else this.mario.morirAnim(this);//si no muere y pierde una vida
+                    if(this.mario.llevaMartillo()) {
+                        if(!this.musicaHammerKill.isPlaying) this.musicaHammerKill.play();
+                        this.barriles[i].aplastado(this);//si lleva un martillo lo mata
+                    }
+                    else {
+                        this.musicaFondo.stop();
+                        this.mario.morirAnim(this);//si no muere y pierde una vida
+                    }
                 }
                 //si mario esta por encima del barril y no ha saltado ningun barril y no esta muerto y no lleva martillo
                 else if(!this.mario.saltado && !this.mario.muerto && !this.mario.llevaMartillo()){
                     this.mario.haSaltado();//marcamos que ha saltado un barril
+                    this.musicaSaltaBarril.play();
                     game.score+=100;//añadimos la puntuacion correspondiente
                     this.hudSpawn(100);//la escribimos en el momento del salto
                 }

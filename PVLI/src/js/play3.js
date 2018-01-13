@@ -5,6 +5,15 @@ var playScene3={
         this.cursors = game.input.keyboard.createCursorKeys();//listener de los eventos de teclado (en cursores)
         this.SpaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //definimos la tecla espacio
 
+        //MUSICA
+        //efectos sonoros y musica de fondo
+        this.musicaHammerKill = game.add.audio('musicaMartilloAplastar');
+        this.musicaGanar = game.add.audio('musicaGanar', 3);
+        this.musicaSaltaBarril = game.add.audio('musicaSaltarBarril');
+        this.musicaItem = game.add.audio('musicaItem');
+        this.musicaFondo = game.add.audio('musicaFondo', 3, true);
+        this.musicaFondo.play();
+
         //ESCALERAS
         //metemos todas las escaleras en un mismo grupo,
         this.escaleras=game.add.physicsGroup();//asi tratamos todas a la vez y no una por una
@@ -155,9 +164,12 @@ var playScene3={
         
         if(game.physics.arcade.overlap(this.mario.gameObject, this.martillos, this.recogeMartillo, null, this)) this.mario.activaMartillo();
 
-        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)) this.hudSpawn(1000);
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.decoScore, this.destruir)){
+            this.musicaItem.play();
+            this.hudSpawn(1000);
+        }
 
-        game.physics.arcade.overlap(this.mario.gameObject, this.plats, this.caete, null, this)
+        if(game.physics.arcade.overlap(this.mario.gameObject, this.plats, this.caete, null, this)) if(!this.musicaSaltaBarril.isPlaying)this.musicaSaltaBarril.play();
 
         //Para cada una de las flamas
         for(var i = 0; i < this.flamas.length; i++){
@@ -165,8 +177,14 @@ var playScene3={
             if(!game.physics.arcade.overlap(this.flamas[i].gameObject, this.escaleras, this.PuedeEscalarF, null, this))this.flamas[i].noPuedeSubir();
             //si mario choca con alguna flama
             if(game.physics.arcade.overlap(this.mario.gameObject, this.flamas[i].gameObject)){
-                if(this.mario.llevaMartillo()) this.flamas[i].aplastado(this);//si lleva martillo la mata
-                else this.mario.morirAnim(this);//si no muere y pierde una vida
+                if(this.mario.llevaMartillo()) {
+                    if(!this.musicaHammerKill.isPlaying) this.musicaHammerKill.play();
+                    this.flamas[i].aplastado(this);//si lleva martillo la mata
+                }
+                else {
+                    this.musicaFondo.stop();
+                    this.mario.morirAnim(this);//si no muere y pierde una vida
+                }
             }
         }
     },
@@ -233,7 +251,10 @@ var playScene3={
             }
             if(child.alive) this.todasCaidas = false;
         }, this);
-        if(this.todasCaidas)this.fin(true);
+        if(this.todasCaidas){
+            this.musicaFondo.stop();
+            this.fin(true);
+        }
     },
     
     //llamado cuando mario las pisa
@@ -308,6 +329,7 @@ var playScene3={
         for(var i = 0;i<this.flamas.length; i++)this.flamas[i].morir();
         //llamamos al menu de ganar o perder
         if(ganar){
+            if(!this.musicaGanar.isPlaying)this.musicaGanar.play();
             this.princesa.animations.play('ganar');
             this.princesa.animations.currentAnim.onComplete.add(this.ganar, this);//cuando termine
         }
