@@ -1,6 +1,10 @@
 //estado how high can you get
 var howHighScene = {
     create:function(){
+        //AUDIO
+        this.musica = game.add.audio('musicaHowHigh', 3);
+        this.musica.play();
+
         //HUD
         game.add.image(0, 0, 'hud');
         var posx = 15;

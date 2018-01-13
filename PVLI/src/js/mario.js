@@ -21,9 +21,16 @@ class Mario extends GameObject{
         this._corriendo = false;//indica si mario esta corriendo (para las animaciones)
         this._parado = true;//indica si mario esta parado
         this._martillo = false;//indica si mario ha cogido un martillo
-        this._maxTimeMartillo = 15;//tiempo maximo que puedes permanecer con el martillo
+        this._maxTimeMartillo = 18;//tiempo maximo que puedes permanecer con el martillo
+        this._musicaAndar = false;
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
+
+        ///AUDIO
+        this.musicaSaltar = game.add.audio('musicaSalto');
+        this.musicaAndar = game.add.audio('musicaAndar', 4, true);
+        this.musicaMuerte = game.add.audio('musicaMuerte');
+        this.musicaMartillo = game.add.audio('musicaMartillo', 4);
 
         //ANIMACIONES
         //todas se guardaran en anim
@@ -32,7 +39,7 @@ class Mario extends GameObject{
         this._anim.add('saltar', [5], null);//salto
         this._anim.add('escalera', [3,4], 8, true);//en una escalera
         this._anim.add('escaleraStop', [3], null);//parado en una escalera
-        this._anim.add('morir', [10,11,12,13,14], 4, null);//muerto
+        this._anim.add('morir', [10, 10, 10, 10,11,12,13,14, 14, 14, 14, 14, 14, 14, 14, 14, 14], 4, null);//muerto
         this._anim.add('stopMart', [15, 16], 10, true);//parado con el martillo
         this._anim.add('walkMart', [17, 18, 19, 20], 10, true);//andando con el martillo
         this._anim.play('stop');
@@ -49,7 +56,7 @@ class Mario extends GameObject{
             this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;//si esta corriendo y no saltando
-                if(!this._martillo)this._anim.play('walk');
+                if(!this._martillo) this._anim.play('walk');
                 else this._anim.play("walkMart");
             }
             this._gameObject.body.velocity.x=-this._vel;
@@ -63,7 +70,7 @@ class Mario extends GameObject{
             this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;
-                if(!this._martillo)this._anim.play('walk');
+                if(!this._martillo) this._anim.play('walk');
                 else this._anim.play("walkMart");
             }
             this._gameObject.body.velocity.x=this._vel;
@@ -74,6 +81,9 @@ class Mario extends GameObject{
     saltar(){
         if(this._jump && !this._muerto && !this._martillo){
             this._jump=false;
+            this.musicaAndar.stop();
+            this._musicaAndar = false;
+            this.musicaSaltar.play();
             this._anim.play("saltar");//anim de saltar
             this._gameObject.body.velocity.y=this._alturaSalto;
         }
@@ -97,6 +107,7 @@ class Mario extends GameObject{
 
     //update del jugador, mira si mario choca con el suelo
     update(plataformas, self){
+        this.musica();//musica de caminar, saltar, etc.
         //mario colisiona con las plataformas si no puede atravesarlas
         if(!this._atraviesa)game.physics.arcade.collide(this._gameObject, plataformas);
         this._atraviesa = false;//reiniciamos atraviesa
@@ -180,29 +191,50 @@ class Mario extends GameObject{
             this._corriendo=false;
             if(!this._parado){
                 this._parado = true;
-                if(!this._martillo)this._anim.play("stop");
+                if(!this._martillo) this._anim.play("stop");
                 else this._anim.play("stopMart");
             }
         }
     }
 
     //llamado cuando dejas de subir por una escalera
-    noEscales(){ if(this._sube && this._subiendo && !this._muerto) this._anim.play("escaleraStop"); }
+    noEscales(){ 
+        if(this._sube && this._subiendo && !this._muerto){
+            this.musicaAndar.stop();
+            this._musicaAndar = false;
+            this._anim.play("escaleraStop");
+        }
+    }
 
     //cuando mario ha cogido un martillo
     activaMartillo(){ 
         this._martillo = true;
+        this.musicaAndar.stop();
+        this.musicaMartillo.play();
         game.time.events.loop(Phaser.Timer.SECOND, this.actualizaContador, this);//suma al contador 1 cada segundo
     }
 
     //cuando el efecto del martillo ha desaparecido
     desactivaMartillo(){ 
         this._contador = 0;
-        this._martillo = false; 
+        this._martillo = false;
+        this.musicaMartillo.stop();
     }
 
     //indica si mario tiene el martillo o no
     llevaMartillo(){ return this._martillo; }
+
+    //gestiona la aparicion de los efectos de sonido
+    musica(){
+        if((this._corriendo && this._jump && !this._muerto || this._subiendo) && !this._musicaAndar){
+            this._musicaAndar = true; 
+            if(!this._martillo) this.musicaAndar.play();
+        }
+        else if((!this._corriendo && !this._subiendo) && this._musicaAndar){
+            this._musicaAndar = false;
+            if(!this._martillo) this.musicaAndar.stop();
+        }
+    }
 
     actualizaContador(){ if(this._martillo) this._contador++; }
 
@@ -213,6 +245,10 @@ class Mario extends GameObject{
         if(!this._muerto){
             game.vidas--;
             game.score = 0;
+            this.musicaAndar.stop();//paramos todos los efectos y suena la musica de morir
+            this.musicaMartillo.stop();
+            this.musicaSaltar.stop();
+            this.musicaMuerte.play();
             this._anim.play('morir');//mueres
             this._muerto = true;
             this._anim.currentAnim.onComplete.add(self.ResetLevel, self);//se llama a reset level de play.js
