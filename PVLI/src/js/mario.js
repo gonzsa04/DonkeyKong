@@ -25,6 +25,12 @@ class Mario extends GameObject{
         //redimensionamos su collider
         this._gameObject.body.setSize(this._gameObject.width*2/9, this._gameObject.height/6);
 
+        ///AUDIO
+        this.musicaSaltar = game.add.audio('musicaSalto');
+        this.musicaAndar = game.add.audio('musicaAndar', 4);
+        this.musicaMuerte = game.add.audio('musicaMuerte');
+        this.musicaMartillo = game.add.audio('musicaMartillo', 4);
+
         //ANIMACIONES
         //todas se guardaran en anim
         this._anim.add('stop', [0], null);//parado
@@ -49,8 +55,16 @@ class Mario extends GameObject{
             this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;//si esta corriendo y no saltando
-                if(!this._martillo)this._anim.play('walk');
-                else this._anim.play("walkMart");
+                if(!this._martillo){
+                    this._anim.play('walk');
+                    this.musicaAndar.restart();
+                    this.musicaMartillo.stop();
+                }
+                else {
+                    this._anim.play("walkMart");
+                    this.musicaMartillo.play();
+                    this.musicaAndar.stop();
+                }
             }
             this._gameObject.body.velocity.x=-this._vel;
         }
@@ -63,8 +77,14 @@ class Mario extends GameObject{
             this._parado = false;
             if(!this._corriendo){
                 this._corriendo=true;
-                if(!this._martillo)this._anim.play('walk');
+                if(!this._martillo){
+                    this._anim.play('walk');
+                    this.musicaAndar.restart();
+                    this.musicaMartillo.stop();
+                }
                 else this._anim.play("walkMart");
+                this.musicaMartillo.play();
+                this.musicaAndar.stop();
             }
             this._gameObject.body.velocity.x=this._vel;
         }
@@ -180,7 +200,10 @@ class Mario extends GameObject{
             this._corriendo=false;
             if(!this._parado){
                 this._parado = true;
-                if(!this._martillo)this._anim.play("stop");
+                if(!this._martillo){
+                    this._anim.play("stop");
+                    this.musicaAndar.stop();
+                }
                 else this._anim.play("stopMart");
             }
         }

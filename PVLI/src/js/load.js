@@ -41,7 +41,16 @@ var loadScene={
 		game.load.spritesheet('marioAnim', 'images/marioAnim.png', 98, 52, 21);//mario
 		game.load.image('youWin', 'images/youWin.png');//has ganado
 		game.load.image('gameOver', 'images/gameOver.png');//has perdido
-		//game.load.video('intro', 'images/IntroRec.mp4');//intro de donkey kong
+		game.load.audio('musicaMenu', 'audio/menuTheme.ogg');
+		game.load.audio('musicaSalto', 'audio/jump.ogg');
+		game.load.audio('musicaAndar', 'audio/walking.ogg');
+		game.load.audio('musicaSaltarBarril', 'audio/jumpbar.ogg');
+		game.load.audio('musicaMuerte', 'audio/death.ogg');
+		game.load.audio('musicaMartillo', 'audio/hammer.ogg');
+		game.load.audio('musicaMartilloAplastar', 'audio/hammerKill.ogg');
+		game.load.audio('musicaGanar', 'audio/win1.ogg');
+		game.load.audio('musicaItem', 'audio/itemget.ogg');
+		game.load.audio('musicaHowHigh', 'audio/howhigh.ogg');
 	},
 	//create es como Start en Unity
 	create:function(){

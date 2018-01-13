@@ -16,6 +16,8 @@ var menuScene={
         this.controls.noSeleccionado()
 
         //decorado
+        this.musica = game.add.audio('musicaMenu', 1, true);
+        this.musica.play();
         this.decorado = game.add.group();
         this.oilDrum1 = this.decorado.create(0, 0, 'drumOil');
         this.oilDrum1.animations.add('normal', [0,1], 2, true);
@@ -56,6 +58,7 @@ var menuScene={
             this.controls.seleccionado()
         }
         if(this.space.isDown){
+            this.musica.stop();
             if(this.start.activado())this.play();
             else this.controlsMenu();
         }
