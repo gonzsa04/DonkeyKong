@@ -14,6 +14,8 @@ var controlsScene = {
         this.controls.x = game.width/2 - this.controls.width/2;
 
         //decoracion
+        this.musica = game.add.audio('musicaControles', 1, true);
+        this.musica.play();
         this.decorado = game.add.group();
         this.move = this.decorado.create(0, 0, 'marioAnim');
         this.move.animations.add('normal', [1, 0, 2], 20, true);
@@ -35,6 +37,7 @@ var controlsScene = {
     },
 
     menu: function(){
+        this.musica.stop();
         game.state.start('menu');
     }
 }

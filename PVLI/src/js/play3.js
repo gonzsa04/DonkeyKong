@@ -72,6 +72,7 @@ var playScene3={
         this.plats.forEach(function(child) {
             game.physics.arcade.enable(child);
             child.body.gravity.y = 0;
+            child.caida = false;
         }, this);
         this.todasCaidas = true;
 
@@ -260,8 +261,11 @@ var playScene3={
     //llamado cuando mario las pisa
     caete:function(mario, plat){
         plat.body.gravity.y = 150;
+        if(!plat.caida){
+        plat.caida = true;
         game.score+=100;
         this.hudSpawn(100);
+        }
     },
 
     //hace al martillo con el que ha chocado mario desaparecer
