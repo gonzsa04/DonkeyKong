@@ -49,5 +49,6 @@ Juego original:
 ### Referencias
 ● Donkey Kong. (Nintendo 1981).
 
-
-Los elementos marcados como “Implementación opcional” serán realizados una vez se termine el juego completo. Si no diera tiempo no se pondrían en el juego final. El número de niveles a replicar dependerá también del tiempo sobrante una vez el juego sea completamente jugable en el nivel 1.
+¿Por qué deberias jugar a Donkey Kong? Podemos presumir que nuestra version del querido y nostálgico es "calcada" a la version original.
+Practicamente con todos los elementos del original, podrás revivir tu infancia pasada en las recreativas sin tener que comprar la NES
+classic ya que, bueno, es gratuito y ademas !jugable desde la web¡
